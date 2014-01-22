@@ -24,4 +24,4 @@ def secure_token
   end
 end
 
-LearnRails::Application.config.secret_key_base = secure_token
+Pressfrwrd::Application.config.secret_key_base = secure_token

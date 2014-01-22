@@ -1,4 +1,4 @@
-LearnRails::Application.configure do
+Pressfrwrd::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -60,7 +60,7 @@ LearnRails::Application.configure do
   # Precompile additional assets.
   # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
   # config.assets.precompile += %w( search.js )
-
+  config.assets.precompile += ['static_pages.css']
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
@@ -87,7 +87,7 @@ config.action_mailer.default :charset => "utf-8"
 config.action_mailer.smtp_settings = {
 address: "smtp.gmail.com",
 port: 587,
-domain: ENV["pressfrwrd.heroku.com"],
+domain: ENV["pressfrwrd.com"],
 authentication: "plain",
 enable_starttls_auto: true,
 user_name: ENV["GMAIL_USERNAME"],
