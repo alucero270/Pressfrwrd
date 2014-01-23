@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-LearnRails::Application.load_tasks
+Pressfrwrd::Application.load_tasks
