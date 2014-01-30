@@ -1,48 +1,40 @@
 source 'https://rubygems.org'
-ruby '2.0.0'
-gem 'rails', '4.0.2'
-gem 'bootstrap-sass', '2.3.2.0'
-gem 'sass-rails', '~> 4.0.0'
-gem 'bcrypt-ruby', '3.1.2'
-gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.0.0'
-gem 'jquery-rails'
-gem 'turbolinks'
-gem 'jbuilder', '~> 1.2'
-gem 'activerecord-tableless'
-gem 'compass-rails', '~> 1.1.2'
-gem 'figaro'
-gem 'gibbon'
-gem 'google_drive'
-gem 'high_voltage'
-gem 'simple_form'
+
+gem 'rails', '3.2.16'
+gem 'bootstrap-sass', '2.1'
+gem 'bcrypt-ruby', '3.0.1'
+gem 'faker', '1.0.1'
+gem 'will_paginate', '3.0.3'
+gem 'bootstrap-will_paginate', '0.0.6'
+gem 'jquery-rails', '2.0.2'
 
 group :development, :test do
-	gem 'rspec-rails', '2.13.1'
-	gem 'guard-rspec', '2.5.0'
-	gem 'better_errors'
-	gem 'quiet_assets'
-	gem 'rails_layout'
-	gem 'sqlite3'
-	gem 'spork-rails', '4.0.0'
-  	gem 'guard-spork', '1.5.0'
-  	gem 'childprocess', '0.3.6'
+  gem 'sqlite3', '1.3.5'
+  gem 'rspec-rails', '2.11.0'
+  gem 'guard-rspec', '1.2.1'
+  gem 'guard-spork', '1.2.0'
+  gem 'childprocess', '0.3.6'
+  gem 'spork', '0.9.2'
+end
+
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails',   '3.2.5'
+  gem 'coffee-rails', '3.2.2'
+  gem 'uglifier', '1.2.3'
 end
 
 group :test do
-	gem 'selenium-webdriver', '2.35.1'
-	gem 'capybara', '2.1.0'
-	gem 'libnotify', '0.8.0'
-	gem 'factory_girl_rails', '4.2.1'
+  gem 'capybara', '1.1.2'
+  gem 'factory_girl_rails', '4.1.0'
+  gem 'cucumber-rails', '1.2.1', :require => false
+  gem 'database_cleaner', '0.7.0'
+  # gem 'launchy', '2.1.0'
+  # gem 'rb-fsevent', '0.9.1', :require => false
+  # gem 'growl', '1.0.3'
 end
 
-group :doc do
-  gem 'sdoc', '0.3.20', require: false
+group :production do
+  gem 'pg', '0.12.2'
 end
-
-group :production, :staging do
-	gem 'pg'
-	gem 'rails_12factor'
-	gem 'thin'
-end
-
