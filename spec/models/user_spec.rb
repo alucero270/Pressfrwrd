@@ -139,14 +139,14 @@ describe User do
   end
 
   describe "remember token" do
-    before { @user.save }
+    before { @user.save! }
     its(:remember_token) { should_not be_blank }
   end
 
 
   describe "micropost associations" do
 
-    before { @user.save }
+    before { @user.save! }
     let!(:older_micropost) do
       FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
     end
@@ -159,7 +159,8 @@ describe User do
     end
 
     it "should destroy associated microposts" do
-      microposts = @user.microposts.dup
+      microposts = @user.microposts.to_a
+      microposts.should_not be_empty
       @user.destroy
       microposts.should_not be_empty
       microposts.each do |micropost|
