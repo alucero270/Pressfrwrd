@@ -1,46 +1,48 @@
 require 'spec_helper'
+require 'debugger'
 
 describe "User pages" do
 
   subject { page }
 
   describe "index" do
-
-    before do
-      sign_in FactoryGirl.create(:user)
-      FactoryGirl.create(:user, name: "Bob", email: "bob@example.com")
-      FactoryGirl.create(:user, name: "Ben", email: "ben@example.com")
+    let(:user) { FactoryGirl.create(:user) }
+    before(:each) do
+      sign_in user
       visit users_path
     end
 
-    it { should have_selector('title', text: 'All users') }
+    it { should have_title('All users') }
+    it { should have_content('All users') }
 
     describe "pagination" do
 
       before(:all) { 30.times { FactoryGirl.create(:user) } }
       after(:all)  { User.delete_all }
 
-      let(:first_page)  { User.page(1) }
-      let(:second_page) { User.page(2) }
 
       it { should have_link('Next') }
       its(:html) { should match('>2</a>') }
+      it { should have_selector('.pagination') }
 
       it "should list each user" do
-        User.all[0..2].each do |user|
-          page.should have_selector('li', text: user.name)
+        User.page(1).each do |user|
+          expect(page).to have_selector('li', text: user.name)
         end
       end
 
+      let(:first_page)  { User.page(1) }
+      let(:second_page) { User.page(2) }
+
       it "should list the first page of users" do
         first_page.each do |user|
-          page.should have_selector('li', text: user.name)
+          expect(page).to have_selector('li', text: user.name)
         end
       end
 
       it "should not list the second page of users" do
         second_page.each do |user|
-          page.should_not have_selector('li', text: user.name)
+          expect(page).not_to have_selector('li', text: user.name)
         end
       end
 
@@ -49,7 +51,7 @@ describe "User pages" do
 
         it "should list the second page of users" do
           second_page.each do |user|
-            page.should have_selector('li', text: user.name)
+            expect(page).to have_selector('li', text: user.name)
           end
         end
       end
@@ -68,7 +70,9 @@ describe "User pages" do
 
         it { should have_link('delete', href: user_path(User.first)) }
         it "should be able to delete another user" do
-          expect { click_link('delete') }.to change(User, :count).by(-1)
+          expect do
+            click_link('delete', match: :first)
+          end.to change(User, :count).by(-1)
         end
         it { should_not have_link('delete', href: user_path(admin)) }
       end
@@ -82,8 +86,8 @@ describe "User pages" do
 
     before { visit user_path(user) }
 
-    it { should have_selector('h1',    text: user.name) }
-    it { should have_selector('title', text: user.name) }
+    it { should have_content(user.name) }
+    it { should have_title(user.name) }
 
     describe "microposts" do
       it { should have_content(m1.content) }
@@ -112,7 +116,7 @@ describe "User pages" do
 
         describe "toggling the button" do
           before { click_button "Follow" }
-          it { should have_selector('input', value: 'Unfollow') }
+          it { should have_xpath("//input[@value='Unfollow']") }
         end
       end
 
@@ -136,7 +140,7 @@ describe "User pages" do
 
         describe "toggling the button" do
           before { click_button "Unfollow" }
-          it { should have_selector('input', value: 'Follow') }
+          it { should have_xpath("//input[@value='Follow']") }
         end
       end
     end
@@ -145,8 +149,8 @@ describe "User pages" do
   describe "signup page" do
     before { visit signup_path }
 
-    it { should have_selector('h1',    text: 'Sign up') }
-    it { should have_selector('title', text: full_title('Sign up')) }
+    it { should have_content('Sign up') }
+    it { should have_title(full_title('Sign up')) }
   end
 
   describe "signup" do
@@ -163,7 +167,7 @@ describe "User pages" do
       describe "error messages" do
         before { click_button submit }
 
-        it { should have_selector('title', text: 'Sign up') }
+        it { should have_title('Sign up') }
         it { should have_content('error') }
       end
     end
@@ -182,12 +186,11 @@ describe "User pages" do
 
       describe "after saving the user" do
         before { click_button submit }
+        let(:user) { User.find_by(email: 'user@example.com') }
 
-        let(:user) { User.find_by_email('user@example.com') }
-
-        it { should have_selector('title', text: user.name) }
-        it { should have_selector('div.alert.alert-success', text: 'Welcome') }
         it { should have_link('Sign out') }
+        it { should have_title(user.name) }
+        it { should have_selector('div.alert.alert-success', text: 'Welcome') }
       end
     end
   end
@@ -200,8 +203,8 @@ describe "User pages" do
     end
 
     describe "page" do
-      it { should have_selector('h1',    text: "Update your profile") }
-      it { should have_selector('title', text: "Edit user") }
+      it { should have_content("Update your profile") }
+      it { should have_title("Edit user") }
       it { should have_link('change', href: 'http://gravatar.com/emails') }
     end
 
@@ -222,11 +225,23 @@ describe "User pages" do
         click_button "Save changes"
       end
 
-      it { should have_selector('title', text: new_name) }
+      it { should have_title(new_name) }
       it { should have_selector('div.alert.alert-success') }
       it { should have_link('Sign out', href: signout_path) }
-      specify { user.reload.name.should  == new_name }
-      specify { user.reload.email.should == new_email }
+      specify { expect(user.reload.name).to  eq new_name }
+      specify { expect(user.reload.email).to eq new_email }
+    end
+
+    describe "forbidden attributes" do
+      let(:params) do
+        { user: { admin: true, password: user.password,
+                  password_confirmation: user.password } }
+      end
+      before do
+        sign_in user, no_capybara: true
+        patch user_path(user), params
+      end
+      specify { expect(user.reload).not_to be_admin }
     end
   end
 
@@ -241,7 +256,7 @@ describe "User pages" do
         visit following_user_path(user)
       end
 
-      it { should have_selector('title', text: full_title('Following')) }
+      it { should have_title(full_title('Following')) }
       it { should have_selector('h3', text: 'Following') }
       it { should have_link(other_user.name, href: user_path(other_user)) }
     end
@@ -252,7 +267,7 @@ describe "User pages" do
         visit followers_user_path(other_user)
       end
 
-      it { should have_selector('title', text: full_title('Followers')) }
+      it { should have_title(full_title('Followers')) }
       it { should have_selector('h3', text: 'Followers') }
       it { should have_link(user.name, href: user_path(user)) }
     end

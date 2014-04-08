@@ -6,7 +6,7 @@ class StaticPagesController < ApplicationController
       @feed_items = current_user.feed.page(params[:page])
     end
   end
-
+  
   def help
   end
 
