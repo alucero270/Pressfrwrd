@@ -20,8 +20,8 @@ describe "User pages" do
       before(:all) { 30.times { FactoryGirl.create(:user) } }
       after(:all)  { User.delete_all }
 
-      let(:first_page)  { User.paginate(page: 1) }
-      let(:second_page) { User.paginate(page: 2) }
+      let(:first_page)  { User.page(1) }
+      let(:second_page) { User.page(2) }
 
       it { should have_link('Next') }
       its(:html) { should match('>2</a>') }
