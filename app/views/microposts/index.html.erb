@@ -1,0 +1,5 @@
+<div id="microposts">
+<%= render partial: 'shared/feed_item', collection: @microposts %>
+</div>
+
+<%= paginate @microposts %>

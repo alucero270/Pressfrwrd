@@ -46,6 +46,8 @@ group :test do
   # gem 'growl', '1.0.3'
 end
 
+
+gem 'pg', '0.17.1'
+gem 'pg_search'
 group :production do
-  gem 'pg', '0.12.2'
 end

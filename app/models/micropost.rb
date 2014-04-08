@@ -13,4 +13,16 @@ class Micropost < ActiveRecord::Base
     where("user_id IN (#{followed_user_ids}) OR user_id = :user_id",
           user_id: user.id)
   end
+  
+  include PgSearch
+  pg_search_scope :search, against: [:content],
+    using: {tsearch: {dictionary: "english", any_word: true}} #, trigram: {}}
+  
+  def self.text_search(query)
+    if query.present?
+      unscoped.search(query)
+    else
+      all
+    end
+  end
 end
