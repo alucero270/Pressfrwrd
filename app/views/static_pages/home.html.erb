@@ -1,4 +1,11 @@
 <% if signed_in? %>
+  <%= form_tag microposts_path, method: :get do %>
+    <p>
+      <%= text_field_tag :query, params[:query] %>
+      <%= submit_tag "Search", name: nil %>
+    </p>
+  <% end %>
+  
   <div class="row">
     <aside class="span4">
       <section>
@@ -15,7 +22,7 @@
       <h3>Micropost Feed</h3>
       <%= render 'shared/feed' %>
     </div>
-  </div>
+  </div>  
 <% else %>
   <div class="center hero-unit">
     <h1>Welcome to Pressfrwrd</h1>
