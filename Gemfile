@@ -15,6 +15,9 @@ gem 'jquery-rails', '3.0.4'
 gem 'turbolinks', '2.2.2' 
 gem 'jbuilder', '2.0.5'
 
+gem 'acts-as-taggable-on'
+gem 'twitter-text'
+
 group :development, :test do
   gem 'debugger'
   gem 'sqlite3', '~> 1.3.9'

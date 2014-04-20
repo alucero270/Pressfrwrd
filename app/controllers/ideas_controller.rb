@@ -3,7 +3,14 @@ class IdeasController < ApplicationController
   before_action :correct_user,   only: :destroy
 
   def index
-    @ideas = Idea.text_search(params[:query]).page(params[:page]).per(3)
+    if params[:query]
+      ideas = Idea.text_search(params[:query])
+    elsif params[:tag]
+      ideas = Idea.tagged_with(params[:tag])
+    else
+      ideas = Idea
+    end
+    @ideas = ideas.page(params[:page]).per(3)
   end
 
   def create
@@ -30,7 +37,7 @@ class IdeasController < ApplicationController
   private
 
     def idea_params
-      params.require(:idea).permit(:content)
+      params.require(:idea).permit(:content, :tag_list)
     end
   
     def correct_user

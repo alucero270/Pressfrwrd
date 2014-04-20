@@ -1,5 +1,6 @@
 <li>
   <span class="content"><%= idea.content %></span>
+  <span class="tags">Tags: <%= raw idea.tag_list.map { |t| link_to t, tag_path(t) }.join(', ') %></span>
   <span class="timestamp">
     Posted <%= time_ago_in_words(idea.created_at) %> ago.
   </span>

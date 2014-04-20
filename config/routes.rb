@@ -20,4 +20,6 @@ Pressfrwrd::Application.routes.draw do
   get '/help',    to: 'static_pages#help'
   get '/about',   to: 'static_pages#about'
   get '/contact', to: 'static_pages#contact'
+
+  get 'tags/:tag', to: 'ideas#index', as: :tag
 end
