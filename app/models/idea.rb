@@ -1,10 +1,10 @@
-class Micropost < ActiveRecord::Base
+class Idea < ActiveRecord::Base
   belongs_to :user
-  default_scope -> { order('created_at DESC') }
+  default_scope { order(created_at: :desc) }
   validates :content, presence: true, length: { maximum: 140 }
   validates :user_id, presence: true
 
-  # Returns microposts from the users being followed by the given user.
+  # Returns ideas from the users being followed by the given user.
   def self.from_users_followed_by(user)
     followed_user_ids = "SELECT followed_id FROM relationships
                          WHERE follower_id = :user_id"
@@ -14,7 +14,7 @@ class Micropost < ActiveRecord::Base
   
   include PgSearch
   pg_search_scope :search, against: [:content],
-    using: {tsearch: {dictionary: "english", any_word: true}} #, trigram: {}}
+    using: {tsearch: {dictionary: "english", any_word: true}}
   
   def self.text_search(query)
     if query.present?

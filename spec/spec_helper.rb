@@ -46,6 +46,10 @@ Spork.prefork do
     config.order = "random"
     # Include the Capybara DSL so that specs in spec/requests still work.
     config.include Capybara::DSL
+
+    # Include the factory girl to create
+    config.include FactoryGirl::Syntax::Methods
+
     # Disable the old-style object.should syntax.
     config.expect_with :rspec do |c|
       c.syntax = :expect

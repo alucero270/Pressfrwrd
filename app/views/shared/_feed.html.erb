@@ -1,5 +1,5 @@
 <% if @feed_items.any? %>
-  <ol class="microposts">
+  <ol class="ideas">
     <%= render partial: 'shared/feed_item', collection: @feed_items %>
   </ol>
   <%= paginate @feed_items %>

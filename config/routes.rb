@@ -5,7 +5,7 @@ Pressfrwrd::Application.routes.draw do
     end
   end
   resources :sessions,      only: [:new, :create, :destroy]
-  resources :microposts,    only: [:index, :create, :destroy] do
+  resources :ideas,         only: [:index, :create, :destroy] do
     member do
       get 'similiar'
     end

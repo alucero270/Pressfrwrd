@@ -19,7 +19,7 @@ describe User do
   it { should respond_to(:remember_token) }
   it { should respond_to(:authenticate) }
   it { should respond_to(:admin) }
-  it { should respond_to(:microposts) }
+  it { should respond_to(:ideas) }
   it { should respond_to(:feed) }
   it { should respond_to(:relationships) }
   it { should respond_to(:followed_users) }
@@ -147,47 +147,47 @@ describe User do
     its(:remember_token) { should_not be_blank }
   end
 
-  describe "micropost associations" do
+  describe "ideas associations" do
 
     before { @user.save! }
-    let!(:older_micropost) do
-      FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
+    let!(:older_idea) do
+      FactoryGirl.create(:idea, user: @user, created_at: 1.day.ago)
     end
-    let!(:newer_micropost) do
-      FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
-    end
-
-    it "should have the right microposts in the right order" do
-      expect(@user.microposts.to_a).to eq [newer_micropost, older_micropost]
+    let!(:newer_idea) do
+      FactoryGirl.create(:idea, user: @user, created_at: 1.hour.ago)
     end
 
-    it "should destroy associated microposts" do
-      microposts = @user.microposts.to_a
-      expect(microposts).not_to be_empty
+    it "should have the right ideas in the right order" do
+      expect(@user.ideas.to_a).to eq [newer_idea, older_idea]
+    end
+
+    it "should destroy associated ideas" do
+      ideas = @user.ideas.to_a
+      expect(ideas).not_to be_empty
       @user.destroy
-      expect(microposts).not_to be_empty
-      microposts.each do |micropost|
-        expect(Micropost.where(id: micropost.id)).to be_empty
+      expect(ideas).not_to be_empty
+      ideas.each do |idea|
+        expect(Idea.where(id: idea.id)).to be_empty
       end
     end
 
     describe "status" do
-      let(:unfollowed_post) do
-        FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
+      let(:unfollowed_idea) do
+        FactoryGirl.create(:idea, user: FactoryGirl.create(:user))
       end
       let(:followed_user) { FactoryGirl.create(:user) }
 
       before do
         @user.follow!(followed_user)
-        3.times { followed_user.microposts.create!(content: "Lorem ipsum") }
+        3.times { followed_user.ideas.create!(content: "Lorem ipsum") }
       end
 
-      its(:feed) { should include(newer_micropost) }
-      its(:feed) { should include(older_micropost) }
-      its(:feed) { should_not include(unfollowed_post) }
+      its(:feed) { should include(newer_idea) }
+      its(:feed) { should include(older_idea) }
+      its(:feed) { should_not include(unfollowed_idea) }
       its(:feed) do
-        followed_user.microposts.each do |micropost|
-          should include(micropost)
+        followed_user.ideas.each do |idea|
+          should include(idea)
         end
       end
     end

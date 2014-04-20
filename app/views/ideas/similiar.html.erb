@@ -1,0 +1,10 @@
+<div id="idea">
+    <%= render partial: 'shared/feed_item', object: @idea %>
+</div>
+
+<h2>Similiar posts:</h2>
+
+<div id="ideas" class="similiar">
+<%= render partial: 'shared/feed_item', collection: @ideas %>
+<%= paginate @ideas %>
+</div>
