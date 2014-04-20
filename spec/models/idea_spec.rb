@@ -24,4 +24,14 @@ describe Idea do
     before { @idea.content = "a" * 141 }
     it { should_not be_valid }
   end
+
+  describe "hashtags" do
+    context "when saving with hashtag in context" do
+      before do
+        @idea.content ="#foo #bar #baz"
+        @idea.save
+      end
+      it { expect(@idea.tags.pluck(:name)).to eq(["foo","bar","baz"])}
+    end
+  end
 end

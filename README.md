@@ -5,10 +5,11 @@ Deployment on heroku:
 0. Development/master branch:
 
 Normally we develop on feature branch, we ask pull request to merge to master.
+We deploy from master to staging, once good we merge from staging to production branch and we deploy from production branch to production.
 
 Then we push to staging to staging repo's master with:
     $ git remote add staging git@heroku.com:pressfrwrd-staging.git
-    $ git push staging staging:master
+    $ git push staging master:master
     
 Once staging is ok, we use github to merge staging to production then. We push to production with:
     $ git remote add production git@heroku.com:pressfrwrd.git
