@@ -6,7 +6,7 @@ class Idea < ActiveRecord::Base
   validates :content, presence: true, length: { maximum: 140 }
   validates :user_id, presence: true
 
-  before_save :add_hashtags_to_tag
+  before_save :add_hashtags_to_tags
 
 
   def add_hashtags_to_tags
