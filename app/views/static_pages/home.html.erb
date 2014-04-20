@@ -1,4 +1,11 @@
 <% if signed_in? %>
+  <%= form_tag ideas_path, method: :get do %>
+    <p>
+      <%= text_field_tag :query, params[:query] %>
+      <%= submit_tag "Search", name: nil %>
+    </p>
+  <% end %>
+  
   <div class="row">
     <aside class="span4">
       <section>
@@ -8,14 +15,14 @@
         <%= render 'shared/stats' %>
       </section>
       <section>
-        <%= render 'shared/micropost_form' %>
+        <%= render 'shared/idea_form' %>
       </section>
     </aside>
     <div class="span8">
-      <h3>Micropost Feed</h3>
+      <h3>Idea Feed</h3>
       <%= render 'shared/feed' %>
     </div>
-  </div>
+  </div>  
 <% else %>
   <div class="center hero-unit">
     <h1>Welcome to Pressfrwrd</h1>

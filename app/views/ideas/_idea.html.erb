@@ -1,0 +1,12 @@
+<li>
+  <span class="content"><%= idea.content %></span>
+  <span class="timestamp">
+    Posted <%= time_ago_in_words(idea.created_at) %> ago.
+  </span>
+  <% if current_user?(idea.user) %>
+    <%= link_to "delete", idea, method: :delete,
+                                     data: { confirm: 'You sure?' },
+                                     title: idea.content %>
+  <% end %>
+  <%= link_to 'similiar', similiar_idea_path(idea) %>
+</li>

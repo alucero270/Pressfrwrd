@@ -1,16 +1,37 @@
-# Ruby on Rails Tutorial: sample application
+# pressfrwrd.com
 
-This is the sample application for
-[*Ruby on Rails Tutorial: Learn Web Development with Rails*](http://railstutorial.org/)
-by [Michael Hartl](http://michaelhartl.com/). You can use this reference implementation to help track down errors if you end up having trouble with code in the tutorial. In particular, as a first debugging check I suggest getting the test suite to pass on your local machine:
+Deployment on heroku:
 
-    $ cd /tmp
-    $ git clone git@github.com:railstutorial/sample_app_2nd_ed.git
-    $ cd sample_app_2nd_ed
+0. Development/master branch:
+
+Normally we develop on feature branch, we ask pull request to merge to master.
+
+Then we push to staging to staging repo's master with:
+    $ git remote add staging git@heroku.com:pressfrwrd-staging.git
+    $ git push staging staging:master
+    
+Once staging is ok, we use github to merge staging to production then. We push to production with:
+    $ git remote add production git@heroku.com:pressfrwrd.git
+    $ git push production production:master
+
+1. Create staging and prod instances
+
+    $ heroku create pressfwrd-staging --remote staging
+    $ heroku create pressfwrd --remote production
+    $ git push staging master
+    $ git push production master
+
+2. Set environments:
+
+3. Run migrations:
+    $ heroku rake db:migrate --app pressfwrd-staging
+    
+
+To run tests:
+
     $ cp config/database.yml.example config/database.yml
     $ bundle install
     $ bundle exec rake db:migrate
     $ bundle exec rake db:test:prepare
     $ bundle exec rspec spec/
 
-If the tests don't pass, it means there may be something wrong with your system. If they do pass, then you can debug your code by comparing it with the reference implementation.
