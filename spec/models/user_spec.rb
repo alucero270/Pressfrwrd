@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'debugger'
-
 describe User do
 
   before do

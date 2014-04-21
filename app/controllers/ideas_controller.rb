@@ -37,7 +37,7 @@ class IdeasController < ApplicationController
   private
 
     def idea_params
-      params.require(:idea).permit(:content, :tag_list)
+      params.require(:idea).permit(:content, :tag_list, :title, {new_asset_attributes:[:file,:filename],existing_asset_attributes:[:file,:filename]})
     end
   
     def correct_user
