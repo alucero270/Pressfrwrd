@@ -18,8 +18,10 @@ gem 'jbuilder', '2.0.5'
 gem 'acts-as-taggable-on'
 gem 'twitter-text'
 
+gem 'paperclip'
+
 group :development, :test do
-  gem 'debugger'
+  gem 'byebug'
   gem 'sqlite3', '~> 1.3.9'
   gem 'rspec-rails', '2.14.2'
 end

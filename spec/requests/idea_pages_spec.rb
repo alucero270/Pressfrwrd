@@ -29,6 +29,20 @@ describe "Idea pages" do
         expect { click_button "Post" }.to change(Idea, :count).by(1)
       end
     end
+
+    describe "content with title and tag" do
+
+      before do
+        fill_in 'idea_content', with: "Lorem ipsum #sample tag #foo" 
+        fill_in 'idea_title', with: "Some title"
+      end
+      it "should create a idea" do
+        expect { click_button "Post" }.to change(Idea, :count).by(1)
+        @idea = Idea.order(:id).last!
+        expect(@idea.title).to eq("Some title")
+        expect(@idea.tag_list).to eq(["sample","foo"])
+      end
+    end
   end
 
   describe "idea destruction" do

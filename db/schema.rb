@@ -11,13 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140420194312) do
+ActiveRecord::Schema.define(version: 20140420210011) do
+
+  create_table "assets", force: true do |t|
+    t.integer  "idea_id"
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+  end
 
   create_table "ideas", force: true do |t|
-    t.string   "content"
+    t.text     "content",    limit: 255
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "title"
   end
 
   add_index "ideas", ["user_id", "created_at"], name: "index_ideas_on_user_id_and_created_at"
