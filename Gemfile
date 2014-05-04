@@ -19,6 +19,7 @@ gem 'acts-as-taggable-on'
 gem 'twitter-text'
 
 gem 'paperclip'
+gem 'aws-sdk'
 
 group :development, :test do
   gem 'byebug'
