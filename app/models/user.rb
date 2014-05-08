@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
   has_secure_password
-  validates :password, length: { minimum: 6 }
+  validates :password, length: { minimum: 6 }, if: :setting_password?
 
   def User.new_remember_token
     SecureRandom.urlsafe_base64
@@ -39,9 +39,17 @@ class User < ActiveRecord::Base
     relationships.find_by(followed_id: other_user.id).destroy
   end
 
+  def is_admin?
+    admin
+  end
+
   private
 
     def create_remember_token
       self.remember_token = User.hash(User.new_remember_token)
+    end
+
+    def setting_password?
+      self.password || self.password_confirmation
     end
 end
