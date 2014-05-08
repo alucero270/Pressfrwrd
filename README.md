@@ -3,6 +3,11 @@
 
 ## Getting started
 
+You need postgre sql, on mac you can install it like:
+
+    $ brew install postgresql
+    $ pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+
 ### run tests
 
     $ cp config/database.yml.example config/database.yml
@@ -49,5 +54,11 @@ Once staging is ok, we use github to merge staging to production then. We push t
 #### Run migrations:
 
     $ heroku rake db:migrate --app pressrfwrd-staging
+
+#### Administration
+
+To make an user admin you have to do this:
+
+    $ User.find_by(email:'mfazekas@szemafor.com').update(admin:true)
 
 

@@ -1,4 +1,8 @@
 Pressfrwrd::Application.routes.draw do
+  namespace :admin do
+    resources :users, only: [:index]
+  end
+
   resources :users do
     member do
       get :following, :followers

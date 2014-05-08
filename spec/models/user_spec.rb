@@ -124,6 +124,14 @@ describe User do
     it { should be_invalid }
   end
 
+  describe "modifing an existing user" do
+    before { @user.save! ; @user = User.find(@user.id) }
+    it "should be valid when not modifying password" do
+      @user.admin=true
+      @user.save!
+    end
+  end
+
   describe "return value of authenticate method" do
     before { @user.save }
     let(:found_user) { User.find_by(email: @user.email) }
