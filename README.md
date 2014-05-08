@@ -53,12 +53,13 @@ Once staging is ok, we use github to merge staging to production then. We push t
 
 #### Run migrations:
 
-    $ heroku rake db:migrate --app pressrfwrd-staging
+    $ heroku run rake db:migrate --app pressrfwrd-staging
 
 #### Administration
 
 To make an user admin you have to do this:
 
+    $ heroku run rails console --app pressfrwrd-staging
     $ User.find_by(email:'mfazekas@szemafor.com').update(admin:true)
 
 
