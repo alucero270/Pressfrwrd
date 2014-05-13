@@ -4,7 +4,7 @@ class Idea < ActiveRecord::Base
   belongs_to :user
   has_many :assets, :dependent => :destroy
   default_scope { order(created_at: :desc) }
-  validates :content, presence: true, length: { maximum: 140 }
+  validates :content, presence: true, length: { maximum: 1400 }
   validates :user_id, presence: true
 
   before_save :add_hashtags_to_tags
