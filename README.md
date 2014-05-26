@@ -29,11 +29,13 @@ Then we push to staging to staging repo's master with:
 
     $ git remote add staging git@heroku.com:pressfrwrd-staging.git
     $ git push staging master:master
+    $ heroku run rake db:migrate --app pressfrwrd-staging
     
-Once staging is ok, we use github to merge staging to production then. We push to production with:
+Once staging is ok, we use github to merge staging to production then.  We make a pull request to production branch with: https://github.com/alucero270/Pressfrwrd/compare/production...master
 
     $ git remote add production git@heroku.com:pressfrwrd.git
     $ git push production production:master
+    $ heroku run rake db:migrate --app pressfrwrd
 
 #### Create staging and prod instances
 
