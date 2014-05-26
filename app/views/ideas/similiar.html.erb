@@ -1,10 +1,16 @@
-<div id="idea">
-    <%= render partial: 'shared/feed_item', object: @idea %>
+<div class="row">
+<div id="idea" class="original-idea col-md-4" >
+    <%= render partial: 'idea', object: @idea %>
 </div>
 
+<div class='similiar-ideas col-md-8'>
 <h2>Similiar posts:</h2>
 
 <div id="ideas" class="similiar">
-<%= render partial: 'shared/feed_item', collection: @ideas %>
-<%= paginate @ideas %>
+<%= render partial: 'idea_in_list', collection: @similiar_ideas, as: :idea, locals: {original_idea: @idea} %>
+<%= paginate @similiar_ideas %>
+</div>
+
+</div>
+
 </div>

@@ -8,7 +8,7 @@ gem 'bcrypt', '3.1.7'
 gem 'faker', '1.1.2'
 
 gem 'kaminari', '~> 0.15.1'
-gem 'kaminari-bootstrap', '~> 0.1.3'
+gem 'kaminari-bootstrap', '~> 3.0.1'
 
 gem 'coffee-rails', '4.0.1'
 gem 'jquery-rails', '3.0.4'
