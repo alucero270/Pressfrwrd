@@ -1,0 +1,30 @@
+<%= form_for(@idea, html: { multipart: true, role:"form", class:"post-idea"}) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <div class="form-group title">
+      <%= f.label :title, class:"control-label" %>
+      <%= f.text_field :title, placeholder: "Some idea...", class:"form-control" %>
+  </div>
+  <div class="form-group content">
+    <%= f.label :content, class:"control-label" %>
+    <%= f.text_area :content, placeholder: "More details, use #hashtags...", class:"form-control" %>
+  </div>
+  <div class="form-group assets">
+     <label class="control-label">Attachments</label>
+     <div class="upload-part">
+          <div class="upload-rows">
+            <%= render :partial => 'asset', :collection => @idea.assets %> 
+          </div> 
+
+          <div class="row">
+            <button class="btn add-asset" data-element-to-add="<%= escape_quotes(render(partial:'asset', object:Asset.new)) %>" data-target="div.upload-rows" >
+                <span class='glyphicon glyphicon-plus'></span>
+            </button>
+          </div>
+     </div>
+  </div>
+  
+
+  <div class="form-group post">
+     <%= f.submit "Post", class: "post-button" %>
+  </div>
+<% end %>

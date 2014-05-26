@@ -1,0 +1,90 @@
+@import "bootstrap";
+
+form.post-idea {
+    @extend .form-horizontal;
+    .post-button {
+        @extend .btn;
+        @extend .btn-large;
+        @extend .btn-primary;
+
+        @extend .col-md-2;
+        @extend .col-md-offset-3; 
+    }
+    div.form-group {
+        label.control-label {
+            @extend .col-md-3;
+        }
+        > .form-control {
+            @extend .col-md-5;
+        }
+        > .input-group {
+            padding-left: 0px;
+            padding-right: 0px;
+            @extend .col-md-5;
+        }
+        > .upload-part {
+            @extend .col-md-5;
+            .upload-row {
+                @extend .row;
+                margin-bottom: 0.5em;
+                > .input-group {
+                    padding-right: 0px;
+                    @extend .col-xs-11;
+                    .btn-file {
+                        @extend .btn;
+                        @extend .btn-default;
+                        input[type=file] {
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            min-width: 100%;
+                            min-height: 100%;
+                            font-size: 999px;
+                            text-align: right;
+                            filter: alpha(opacity=0);
+                            opacity: 0;
+                            outline: none;
+                            background: white;
+                            cursor: inherit;
+                            display: block;
+                        }
+                        position: relative;
+                        overflow: hidden;
+                    }
+                }
+                > .remove-row-btn {
+                    @extend .col-xs-1;
+                }
+            }
+        }
+        textarea#idea_content {
+            height: 10*$line-height-computed;
+        }
+    }
+}
+
+div.idea {
+  span.title {
+    @extend .h3
+  }
+  a.delete-button {
+    @extend .glyphicon;
+    @extend .glyphicon-trash;
+    @extend .btn;
+    @extend .btn-default;
+    @extend .btn-large;
+  }
+  a.edit-button {
+    @extend .glyphicon;
+    @extend .glyphicon-edit;
+    @extend .btn;
+    @extend .btn-default;
+    @extend .btn-large;
+  }
+  
+  a.join-button {
+    @extend .btn;
+    @extend .btn-primary;
+    @extend .btn-large;
+  }
+}

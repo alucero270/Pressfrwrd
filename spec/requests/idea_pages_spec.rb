@@ -8,7 +8,8 @@ describe "Idea pages" do
   before { sign_in user }
 
   describe "idea creation" do
-    before { visit root_path }
+    before { visit root_path
+             click_link "Post new idea" }
     
     describe "with invalid information" do
       

@@ -9,9 +9,10 @@ Pressfrwrd::Application.routes.draw do
     end
   end
   resources :sessions,      only: [:new, :create, :destroy]
-  resources :ideas,         only: [:index, :create, :destroy] do
+  resources :ideas,         only: [:index, :create, :destroy, :new] do
     member do
       get 'similiar'
+      get 'join/:joined_id', action: 'join', as: 'join'
     end
   end
   resources :relationships, only: [:create, :destroy]

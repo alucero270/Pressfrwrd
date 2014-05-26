@@ -1,0 +1,17 @@
+<div class="upload-row">
+  <button class="btn remove-row-btn remove-asset" data-target="div.upload-row">
+    <span class='glyphicon glyphicon-minus'></span>
+  </button>
+  <div class="input-group">
+    <input class="form-control file-label" placeholder="No file chosen" type="text" readonly />
+    <span class="input-group-btn">
+      <span class="btn-file">Choose File
+            <% new_or_existing = asset.new_record? ? 'new' : 'existing' %>
+            <% prefix = "idea[#{new_or_existing}_asset_attributes][]" %>
+            <%= fields_for prefix,asset do |asset_form| %>
+                <%= asset_form.file_field :file %> 
+            <% end %>
+      </span>
+    </span>
+  </div>
+</div>

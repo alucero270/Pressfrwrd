@@ -22,4 +22,8 @@ module ApplicationHelper
     func="$('#assets').append('#{partjs}')"
     link_to_function name, func, class:"add_file"
   end
+
+  def escape_quotes(string,quote='"')
+    string.gsub('"','&quot;')
+  end
 end

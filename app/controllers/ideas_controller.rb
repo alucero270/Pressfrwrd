@@ -2,6 +2,10 @@ class IdeasController < ApplicationController
   before_action :signed_in_user, only: [:create, :destroy]
   before_action :correct_user,   only: :destroy
 
+  def new
+    @idea  = current_user.ideas.build
+  end
+
   def index
     if params[:query]
       ideas = Idea.text_search(params[:query])
@@ -17,16 +21,19 @@ class IdeasController < ApplicationController
     @idea = current_user.ideas.build(idea_params)
     if @idea.save
       flash[:success] = "Idea created!"
-      redirect_to root_url
+      return redirect_to similiar_idea_path(@idea)
     else
-      @feed_items = []
-      render 'static_pages/home'
+      flash.alert = "Unable to save idea"
+      return render :new
     end
   end
   
   def similiar
     @idea = Idea.find(params[:id])
-    @ideas = Idea.text_search(@idea.content).page(params[:page]).per(3)
+    @similiar_ideas = Idea.text_search(@idea.content).where('ideas.id <> ?',@idea.id).page(params[:page]).per(3)
+  end
+
+  def join
   end
 
   def destroy
