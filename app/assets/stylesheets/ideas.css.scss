@@ -81,10 +81,46 @@ div.idea {
     @extend .btn-default;
     @extend .btn-large;
   }
-  
   a.join-button {
     @extend .btn;
     @extend .btn-primary;
-    @extend .btn-large;
+    @extend .btn-sm;
+  }
+}
+
+div.similiar-page {
+  @extend .row;
+  div.original-idea {
+    @extend .col-md-5;
+  }
+  div.similiar-ideas-part {
+    div.similiar-heading {
+        h3 {
+            margin-top: 0px;
+        }
+    }
+    @extend .col-md-7;
+    div.similiar-ideas {
+        div.idea {
+            @extend .panel;
+            @extend .panel-default;
+            div.idea-heading {
+                @extend .panel-heading;
+                div.idea-heading-buttons {
+                    @extend .btn-group;
+                    @extend .pull-right;
+                }
+                h3.idea-title {
+                    @extend .panel-title;
+                }
+            }
+            div.idea-body {
+                @extend .panel-body;
+                span.idea-timestamp-author {
+                    @extend .pull-right;
+                }
+            }
+        }
+    }
   }
 }

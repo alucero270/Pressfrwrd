@@ -1,24 +1,33 @@
 <div class="idea">
-<span class="row"> 
-  <span class="title"><%= idea.title%></span>
-  <%= link_to "Join", join_idea_url(original_idea,idea), class:"join-button" %>
-</span>
-<span class="content"><%= idea.content %></span>
-<span class="images">
-  <% for asset in idea.assets %>
-    <% if !(asset.file.content_type =~ /^image/).nil? %>
-      <p><%= image_tag asset.file.url(:medium) %></p>
-    <% end %>
-  <% end %>
-</span>
-<span class="tags row">Tags: <%= raw idea.tag_list.map { |t| link_to t, tag_path(t), class:"tag" }.join(', ') %></span>
-<span class="row">
-  <span class="timestamp">Posted <%= time_ago_in_words(idea.created_at) %> ago.</span>
-  <span class="author">
-    <%= link_to gravatar_for(idea.user), idea.user %>
-    <span class="user">
-      <%= link_to idea.user.name, idea.user %>
-    </span>    
-  </span>
-</span>
+  <div class="idea-heading">
+    <div class="idea-heading-buttons">
+      <%= link_to "Join", join_idea_url(original_idea,idea), class: "join-button" %>
+    </div>
+    <h3 class="idea-title"><%= idea.title%></h3>
+    <div class="clearfix"> </div>
+  </div>
+  <div class="idea-body">
+     <span class="content"><%= idea.content %></span>
+     <span class="images">
+        <% for asset in idea.assets %>
+            <% if !(asset.file.content_type =~ /^image/).nil? %>
+                <p><%= image_tag asset.file.url(:medium) %></p>
+            <% end %>
+        <% end %>
+     </span>
+
+     <span class="idea-footer">
+       <span class="tags">Tags: <%= raw idea.tag_list.map { |t| link_to t, tag_path(t), class:"tag" }.join(', ') %></span>
+       <span class="idea-timestamp-author">
+         <span class="timestamp">Posted <%= time_ago_in_words(idea.created_at) %> ago.</span>
+         <span class="author">
+           <%= link_to gravatar_for(idea.user), idea.user %>
+           <span class="user">
+             <%= link_to idea.user.name, idea.user %>
+           </span>
+         </span>
+       </span>
+     </span>
+
+  </div>
 </div>
