@@ -14,4 +14,12 @@ FactoryGirl.define do
     content "Lorem ipsum"
     user
   end
+
+  factory :group do
+  end
+
+  factory :join_request do
+    association :idea
+    association :group
+  end
 end
