@@ -2,7 +2,13 @@ class Idea < ActiveRecord::Base
   acts_as_taggable
 
   belongs_to :user
-  has_many :assets, :dependent => :destroy
+  has_many :assets, dependent: :destroy
+
+  has_many :votes
+
+  has_many :join_requests
+  belongs_to :group, dependent: :destroy
+
   default_scope { order(created_at: :desc) }
   validates :content, presence: true, length: { maximum: 1400 }
   validates :user_id, presence: true
@@ -29,8 +35,12 @@ class Idea < ActiveRecord::Base
 
   def save_assets
     assets.each do |asset|
-      asset.save(false)
+      asset.save(validate:false)
     end
+  end
+
+  def group
+    super || do_create_group
   end
 
   def add_hashtags_to_tags
@@ -55,5 +65,13 @@ class Idea < ActiveRecord::Base
     else
       all
     end
+  end
+
+  private
+
+  def do_create_group
+    ret = self.create_group!
+    self.save!
+    ret
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140420210011) do
+ActiveRecord::Schema.define(version: 20140530154132) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,15 +24,28 @@ ActiveRecord::Schema.define(version: 20140420210011) do
     t.datetime "file_updated_at"
   end
 
+  create_table "groups", force: true do |t|
+  end
+
   create_table "ideas", force: true do |t|
     t.text     "content"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "title"
+    t.integer  "group_id"
   end
 
   add_index "ideas", ["user_id", "created_at"], name: "index_ideas_on_user_id_and_created_at", using: :btree
+
+  create_table "join_requests", force: true do |t|
+    t.integer "group_id"
+    t.integer "idea_id"
+    t.integer "status",   default: 0
+  end
+
+  add_index "join_requests", ["group_id"], name: "index_join_requests_on_group_id", using: :btree
+  add_index "join_requests", ["idea_id"], name: "index_join_requests_on_idea_id", using: :btree
 
   create_table "relationships", force: true do |t|
     t.integer  "follower_id"
@@ -76,5 +89,14 @@ ActiveRecord::Schema.define(version: 20140420210011) do
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["remember_token"], name: "index_users_on_remember_token", using: :btree
+
+  create_table "votes", force: true do |t|
+    t.integer "join_request_id"
+    t.integer "idea_id"
+    t.integer "status",          default: 0
+  end
+
+  add_index "votes", ["idea_id"], name: "index_votes_on_idea_id", using: :btree
+  add_index "votes", ["join_request_id"], name: "index_votes_on_join_request_id", using: :btree
 
 end
