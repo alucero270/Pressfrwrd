@@ -15,7 +15,7 @@ class AddGroupAndJoinRequestTable < ActiveRecord::Migration
     
     create_table :votes do |t|
       t.references :join_request, index: true
-      t.references :idea, index: true
+      t.references :user, index: true
       t.column :status, :integer, default: 0
     end
   end

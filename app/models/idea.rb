@@ -43,6 +43,10 @@ class Idea < ActiveRecord::Base
     super || do_create_group
   end
 
+  def has_group?
+    self.group_id != nil
+  end
+
   def add_hashtags_to_tags
     self.tag_list=Twitter::Extractor::extract_hashtags(self.content).join(",")
   end
@@ -53,6 +57,14 @@ class Idea < ActiveRecord::Base
                          WHERE follower_id = :user_id"
     where("user_id IN (#{followed_user_ids}) OR user_id = :user_id", 
           user_id: user.id)
+  end
+
+  def join_to_me_requests
+    if has_group?
+      return self.group.join_requests
+    else
+      return []
+    end
   end
   
   include PgSearch

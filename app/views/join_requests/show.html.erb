@@ -1,0 +1,19 @@
+<h3><%= @join_request.idea.user.name %> wants to join his idea named '<%= @join_request.idea.title %>' to these ideas: <%= @join_request.group.ideas.pluck(:title).map{|t| "\'"+t+"\'"}.join(", ") %></h3>
+<h4>This request is: <%= @join_request.status %></h4>
+<span>Votes: pending count=<%= @join_request.votes.pending.count %> accepted count=<%= @join_request.votes.accepted.count %> rejected count=<%= @join_request.votes.rejected.count %>
+<% if @current_users_vote.pending? %>
+    <%= link_to "Accept", accept_join_request_path(@join_request) ,class: "btn btn-default btn-primary glyphicon glyphicon-thumbs-up", method: :put %>
+    <%= link_to "Reject", reject_join_request_path(@join_request), class: "btn btn-default btn-primary glyphicon glyphicon-thumbs-down", method: :put %>
+<% else %>
+    You've already <%= @current_users_vote.status %> this request.
+<% end %>
+<div class="row">
+    <div class="joiner-idea col-md-5">
+        <h3>Idea to join</h3>
+        <%= render partial: @join_request.idea, locals: { options: {show_edit:false}} %> 
+    </div>
+    <div class="join-to-ideas col-md-7">
+        <h3>Ideas to be joined</h3>
+        <%= render partial: @join_request.group.ideas, locals: { options: {show_edit:false}} %> 
+    </div>
+</div>

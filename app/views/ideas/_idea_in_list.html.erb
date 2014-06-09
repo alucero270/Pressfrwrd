@@ -1,7 +1,7 @@
 <div class="idea">
   <div class="idea-heading">
     <div class="idea-heading-buttons">
-      <%= link_to "Join", join_idea_url(original_idea,idea), class: "join-button" %>
+      <%= link_to "Join", join_requests_path(idea: original_idea, idea_to_join: idea), method: :post, class: "join-button" %>
     </div>
     <h3 class="idea-title"><%= idea.title%></h3>
     <div class="clearfix"> </div>
@@ -16,18 +16,23 @@
         <% end %>
      </span>
 
-     <span class="idea-footer">
-       <span class="tags">Tags: <%= raw idea.tag_list.map { |t| link_to t, tag_path(t), class:"tag" }.join(', ') %></span>
-       <span class="idea-timestamp-author">
-         <span class="timestamp">Posted <%= time_ago_in_words(idea.created_at) %> ago.</span>
-         <span class="author">
-           <%= link_to gravatar_for(idea.user), idea.user %>
-           <span class="user">
-             <%= link_to idea.user.name, idea.user %>
+     <div class="idea-footer">
+       <div class="tags-and-author">
+         <span class="tags">Tags: <%= raw idea.tag_list.map { |t| link_to t, tag_path(t), class:"tag" }.join(', ') %></span>
+         <span class="idea-timestamp-author">
+           <span class="timestamp">Posted <%= time_ago_in_words(idea.created_at) %> ago.</span>
+           <span class="author">
+             <%= link_to gravatar_for(idea.user), idea.user %>
+             <span class="user">
+               <%= link_to idea.user.name, idea.user %>
+             </span>
            </span>
          </span>
-       </span>
-     </span>
+       </div>
 
+       <% if idea.user_id == current_user.id %>
+         <%= render partial: 'ideas/join_requests', locals: {idea: idea} %>
+       <% end %>
+     </div>
   </div>
 </div>

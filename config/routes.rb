@@ -12,7 +12,13 @@ Pressfrwrd::Application.routes.draw do
   resources :ideas,         only: [:index, :create, :destroy, :new] do
     member do
       get 'similiar'
-      get 'join/:joined_id', action: 'join', as: 'join'
+    end
+  end
+  
+  resources :join_requests, only: [:create, :update, :show] do
+    member do
+      put 'accept'
+      put 'reject'
     end
   end
   resources :relationships, only: [:create, :destroy]

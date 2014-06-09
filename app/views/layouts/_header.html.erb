@@ -16,6 +16,14 @@
                 <li><%= link_to "Home", root_path %></li>
                 <li><%= link_to "Help", help_path %></li>
                 <% if signed_in? %>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle glyphicon glyphicon-envelope" data-toggle="dropdown"><span class="badge alert-success"><%= current_user.votes.pending.count %></span></a>
+                        <ul class='dropdown-menu'>
+                            <% current_user.votes.pending.each do |vote| %>
+                                <li><%= link_to "Request from #{vote.join_request.idea.user.name} to join \"#{vote.join_request.idea.title}\" into \"#{vote.join_request.group.title}\"", vote.join_request %></li>
+                            <% end %>
+                        </ul>
+                    </li>
                     <li><%= link_to "Users", users_path %></li>
                     <li class="dropdown">
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
