@@ -88,6 +88,27 @@ div.idea {
   }
 }
 
+div.idea {
+    @extend .panel;
+    @extend .panel-default;
+    div.idea-heading {
+        @extend .panel-heading;
+        div.idea-heading-buttons {
+            @extend .btn-group;
+            @extend .pull-right;
+        }
+        h3.idea-title {
+            @extend .panel-title;
+        }
+    }
+    div.idea-body {
+        @extend .panel-body;
+        span.idea-timestamp-author {
+            @extend .pull-right;
+        }
+    }
+}
+
 div.similiar-page {
   @extend .row;
   div.original-idea {
@@ -101,26 +122,7 @@ div.similiar-page {
     }
     @extend .col-md-7;
     div.similiar-ideas {
-        div.idea {
-            @extend .panel;
-            @extend .panel-default;
-            div.idea-heading {
-                @extend .panel-heading;
-                div.idea-heading-buttons {
-                    @extend .btn-group;
-                    @extend .pull-right;
-                }
-                h3.idea-title {
-                    @extend .panel-title;
-                }
-            }
-            div.idea-body {
-                @extend .panel-body;
-                span.idea-timestamp-author {
-                    @extend .pull-right;
-                }
-            }
-        }
+        
     }
   }
 }

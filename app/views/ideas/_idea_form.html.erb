@@ -1,3 +1,4 @@
+<% options ||= {} ; options = {show_edit_buttons:true,}.merge(options) %>
 <%= form_for(@idea, html: { multipart: true, role:"form", class:"post-idea"}) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>
   <div class="form-group title">

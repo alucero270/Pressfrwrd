@@ -92,11 +92,11 @@ ActiveRecord::Schema.define(version: 20140530154132) do
 
   create_table "votes", force: true do |t|
     t.integer "join_request_id"
-    t.integer "idea_id"
+    t.integer "user_id"
     t.integer "status",          default: 0
   end
 
-  add_index "votes", ["idea_id"], name: "index_votes_on_idea_id", using: :btree
   add_index "votes", ["join_request_id"], name: "index_votes_on_join_request_id", using: :btree
+  add_index "votes", ["user_id"], name: "index_votes_on_user_id", using: :btree
 
 end
