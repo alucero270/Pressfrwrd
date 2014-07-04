@@ -14,7 +14,11 @@ class IdeasController < ApplicationController
     else
       ideas = Idea
     end
-    @ideas = ideas.page(params[:page]).per(3)
+    @ideas = ideas.page(params[:page]).per(8)
+  end
+
+  def show
+    @idea = Idea.find(params[:id])
   end
 
   def create

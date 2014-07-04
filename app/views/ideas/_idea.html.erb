@@ -1,4 +1,4 @@
-<% options ||= {} ; options = {show_edit:false,show_join:false,show_requests:false}.merge(options) %>
+<% options ||= {} ; options = {show_edit:true,show_join:false,show_requests:false,show_group:true}.merge(options) %>
 <div class="idea">
   <div class="idea-heading">
     <% if options[:show_join] %>
@@ -32,12 +32,23 @@
           </span>
         </span>
       </div>
+      <% if options[:show_group] and idea.has_group? %>
+        <div class="group-info">
+          This idea is member of a group of <%= idea.group.ideas.count %> ideas. Peers:
+          <ul>
+          <% idea.group.ideas.where.not(id:idea.id).each do |idea_in_group|%>
+            <li><%= link_to idea_in_group.title, idea_in_group %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
       <% if options[:show_edit] and current_user?(idea.user) %>
-        <%= link_to "edit", idea, class: "edit-button" %>
+        <%= link_to "edit", idea, class: "btn edit-button" %>
         <%= link_to "delete", idea, method: :delete,
-                                         data: { confirm: 'You sure?' },
+                                         data: { confirm: 'Are you sure?' },
                                          title: idea.title,
-                                         class: "delete-button" %>
+                                         class: "btn delete-button" %>
+        <%= link_to 'similiar', similiar_idea_path(idea), class: "btn simliar-button" %>
       <% end %>
       <% if options[:show_requests] and idea.user_id == current_user.id %>
         <%= render partial: 'ideas/join_requests', locals: {idea: idea} %>

@@ -81,6 +81,13 @@ div.idea {
     @extend .btn-default;
     @extend .btn-large;
   }
+  a.simliar-button {
+    @extend .glyphicon;
+    @extend .glyphicon-log-in;
+    @extend .btn;
+    @extend .btn-default;
+    @extend .btn-large;
+  }
   a.join-button {
     @extend .btn;
     @extend .btn-primary;
