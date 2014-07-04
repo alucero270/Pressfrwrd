@@ -1,7 +1,7 @@
 <% if idea.join_to_me_requests.present? %>
   <hr/>
   <div class="join-requests">
-    <% idea.join_to_me_requests.each do |join_request| %>
+    <% idea.join_to_me_requests.pending.each do |join_request| %>
       <div class="join-request alert alert-info">
         User <%= join_request.idea.user.name %> ideas: "<%= join_request.idea.title %>" want's to join this idea!
         <%= link_to 'View details', join_request_path(join_request) %>

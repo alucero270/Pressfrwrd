@@ -9,11 +9,7 @@
     <h3 class="similiar-title">Similiar ideas</h3>
   </div>
   <div class="similiar-body" id="ideas">
-      <% if true %>
-        <%= render partial: @similiar_ideas, locals: {original_idea:@idea,options:{show_requests:true,show_join:true,show_edit:false}}%>
-      <% else %>
-        <%= render partial: 'idea_in_list', collection: @similiar_ideas, as: :idea, locals: {original_idea: @idea} %>
-      <% end %>
+      <%= render partial: @similiar_ideas, locals: {original_idea:@idea,options:{show_requests:true,show_join:true,show_edit:false}}%>
       <%= paginate @similiar_ideas %>
   </div>
  </div>
