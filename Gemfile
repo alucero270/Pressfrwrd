@@ -30,10 +30,6 @@ end
 group :test do
   gem 'spring-commands-rspec'
   gem 'guard-rspec', '2.5.0'
-  gem 'spork-rails', '4.0.0'
-  gem 'guard-spork', '1.5.1'
-  gem 'childprocess', '0.5.2'
-  gem 'spork', '1.0.0rc4'
 end
 
 gem 'sass-rails','4.0.1', :git => 'git://github.com/rails/sass-rails.git'
