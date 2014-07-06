@@ -9,7 +9,9 @@ describe Idea do
 
   it { should respond_to(:content) }
   it { should respond_to(:user) }
-  it { should respond_to(:group)}
+  it { should respond_to(:group) }
+  it { should respond_to(:has_group?) }
+  it { should respond_to(:is_in_group?) }
 
   describe "when user_id is not present" do
     before { @idea.user_id = nil }

@@ -7,4 +7,8 @@ class Group < ActiveRecord::Base
   def title
     ideas.first.title
   end
+
+  def size
+    ideas.size
+  end
 end

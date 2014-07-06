@@ -47,6 +47,10 @@ class Idea < ActiveRecord::Base
     self.group_id != nil
   end
 
+  def is_in_group?
+    self.group_id != nil and self.group.size > 1
+  end
+
   def add_hashtags_to_tags
     self.tag_list=Twitter::Extractor::extract_hashtags(self.content).join(",")
   end

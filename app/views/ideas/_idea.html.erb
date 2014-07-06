@@ -32,12 +32,12 @@
           </span>
         </span>
       </div>
-      <% if options[:show_group] and idea.has_group? %>
+      <% if options[:show_group] and idea.is_in_group? %>
         <div class="group-info">
           This idea is member of a group of <%= idea.group.ideas.count %> ideas. Peers:
           <ul>
           <% idea.group.ideas.where.not(id:idea.id).each do |idea_in_group|%>
-            <li><%= link_to idea_in_group.title, idea_in_group %></li>
+            <li class="group-member"><%= link_to idea_in_group.title, idea_in_group %></li>
           <% end %>
           </ul>
         </div>
