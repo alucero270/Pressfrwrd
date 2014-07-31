@@ -10,6 +10,30 @@ form.post-idea {
         @extend .col-md-2;
         @extend .col-md-offset-3; 
     }
+		.col-add-asset {
+			@extend .col-xs-1;
+			padding-left:0px;
+		}
+    .btn.file {
+        @extend .btn-default;
+        input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 999px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            background: white;
+            cursor: inherit;
+            display: block;
+        }
+        position: relative;
+        overflow: hidden;
+    }
     div.form-group {
         label.control-label {
             @extend .col-md-3;
@@ -30,37 +54,18 @@ form.post-idea {
                 > .input-group {
                     padding-right: 0px;
                     @extend .col-xs-11;
-                    .btn-file {
-                        @extend .btn;
-                        @extend .btn-default;
-                        input[type=file] {
-                            position: absolute;
-                            top: 0;
-                            right: 0;
-                            min-width: 100%;
-                            min-height: 100%;
-                            font-size: 999px;
-                            text-align: right;
-                            filter: alpha(opacity=0);
-                            opacity: 0;
-                            outline: none;
-                            background: white;
-                            cursor: inherit;
-                            display: block;
-                        }
-                        position: relative;
-                        overflow: hidden;
-                    }
                 }
-                > .remove-row-btn {
+	              > .remove-row-btn {
                     @extend .col-xs-1;
                 }
             }
+
         }
         textarea#idea_content {
             height: 10*$line-height-computed;
         }
     }
+
 }
 
 div.idea {

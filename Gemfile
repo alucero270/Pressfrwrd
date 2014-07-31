@@ -24,7 +24,7 @@ gem 'aws-sdk'
 group :development, :test do
   gem 'byebug'
   gem 'sqlite3', '~> 1.3.9'
-  gem 'rspec-rails', '2.14.2'
+  gem 'rspec-rails', '2.99'
 end
 
 group :test do
@@ -32,12 +32,12 @@ group :test do
   gem 'guard-rspec', '2.5.0'
 end
 
-gem 'sass-rails','4.0.1', :git => 'git://github.com/rails/sass-rails.git'
+gem 'sass-rails', '~> 4.0.3'
 gem 'uglifier', '2.1.1'
 
 group :test do
   gem 'selenium-webdriver', '2.41.0'
-  gem 'capybara', '2.1.0'
+  gem 'capybara', '~> 2.4.1'
   gem 'factory_girl_rails', '4.2.0'
   gem 'cucumber-rails', '~> 1.4.0', :require => false
   gem 'database_cleaner', '1.2'

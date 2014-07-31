@@ -51,11 +51,11 @@ describe JoinRequest do
     it "should reject/accept idea when majority reached" do
       @join_request = JoinRequest.create(idea:@idea,group:@group)
       @vote = @join_request.votes.find_by(user:@group.ideas.first.user)
-      expect(@join_request.pending?).to be_true
-      expect(@join_request.accepted?).to be_false
+      expect(@join_request.pending?).to be_truthy
+      expect(@join_request.accepted?).to be_falsey
       @vote.accepted!
-      expect(@join_request.reload.accepted?).to be_true
-      expect(@join_request.reload.pending?).to be_false
+      expect(@join_request.reload.accepted?).to be_truthy
+      expect(@join_request.reload.pending?).to be_falsey
     end
 
     it "should join a group when accepted" do

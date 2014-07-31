@@ -21,6 +21,21 @@ class IdeasController < ApplicationController
     @idea = Idea.find(params[:id])
   end
 
+  def edit
+    @idea = current_user.ideas.find(params[:id])
+  end
+
+  def update
+    @idea = current_user.ideas.find(params[:id])
+    if @idea.update(idea_params)
+      flash[:success] = "Idea updated!"
+      return redirect_to similiar_idea_path(@idea)
+    else
+      flash.alert = "Unable to save idea"
+      return render :edit
+    end
+  end
+
   def create
     @idea = current_user.ideas.build(idea_params)
     if @idea.save
@@ -48,7 +63,7 @@ class IdeasController < ApplicationController
   private
 
     def idea_params
-      params.require(:idea).permit(:content, :tag_list, :title, {new_asset_attributes:[:file,:filename],existing_asset_attributes:[:file,:filename]})
+      params.require(:idea).permit(:content, :tag_list, :title, {new_asset_attributes:[:file,:filename],existing_asset_attributes:[:file,:filename,:_destroy]})
     end
   
     def correct_user

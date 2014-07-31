@@ -48,6 +48,9 @@ begin
 
     # Include the factory girl to create
     config.include FactoryGirl::Syntax::Methods
+    
+    # TODO add manually
+    config.infer_spec_type_from_file_location!
 
     # Disable the old-style object.should syntax.
     config.expect_with :rspec do |c|

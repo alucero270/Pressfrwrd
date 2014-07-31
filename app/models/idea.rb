@@ -25,10 +25,12 @@ class Idea < ActiveRecord::Base
   def existing_asset_attributes=(asset_attributes)
     assets.reject(&:new_record?).each do |asset|
       attributes = asset_attributes[asset.id.to_s]
-      if attributes
-        asset.attributes = attributes
-      else
-        asset.delete(asset)
+      if attributes 
+        if attributes['_destroy']=='true'
+          asset.delete
+        else
+          asset.attributes = attributes.except('_destroy')
+        end
       end
     end
   end

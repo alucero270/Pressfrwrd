@@ -1,17 +1,30 @@
-<div class="upload-row">
-  <button class="btn remove-row-btn remove-asset" data-target="div.upload-row">
-    <span class='glyphicon glyphicon-minus'></span>
-  </button>
+<div class="row upload-row">
+<%if !asset.new_record? %>
+	 <%= fields_for "idea[existing_asset_attributes][]",asset do |asset_form| %>
+	 		<%= asset_form.hidden_field :_destroy, value: false, class:"destory-field" %>
+	 <% end %>
+<%end%>
+	<div class="col-add-asset">
+		<%if asset.new_record? %>
+		<button class="btn remove-row-btn remove-asset" data-target="div.upload-row">
+		<% else %>
+		<button class="btn remove-row-btn remove-existing-asset" data-target="div.upload-row" data-set-to-true-target="input.destory-field">
+		<% end %>
+			<span class='glyphicon glyphicon-minus'></span>
+		</button>
+	</div>
   <div class="input-group">
-    <input class="form-control file-label" placeholder="No file chosen" type="text" readonly />
-    <span class="input-group-btn">
-      <span class="btn-file">Choose File
-            <% new_or_existing = asset.new_record? ? 'new' : 'existing' %>
-            <% prefix = "idea[#{new_or_existing}_asset_attributes][]" %>
-            <%= fields_for prefix,asset do |asset_form| %>
-                <%= asset_form.file_field :file %> 
-            <% end %>
+		<% if asset.new_record? %>
+      <input class="form-control file-label" placeholder="No file chosen" type="text" readonly />
+      <span class="input-group-btn">
+        <span class="btn file">Choose File
+					<%= fields_for "idea[new_asset_attributes][]",asset do |asset_form| %>
+             <%= asset_form.file_field :file %> 
+          <% end %>
+        </span>
       </span>
-    </span>
+		<% else %>
+			<span class='input-existing'><%= asset.file_file_name %></span>
+		<% end %>
   </div>
 </div>

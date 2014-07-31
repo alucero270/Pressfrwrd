@@ -43,7 +43,7 @@
         </div>
       <% end %>
       <% if options[:show_edit] and current_user?(idea.user) %>
-        <%= link_to "edit", idea, class: "btn edit-button" %>
+        <%= link_to "edit", url_for([:edit,idea]), class: "btn edit-button" %>
         <%= link_to "delete", idea, method: :delete,
                                          data: { confirm: 'Are you sure?' },
                                          title: idea.title,
