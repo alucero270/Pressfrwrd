@@ -7,7 +7,12 @@ class Idea < ActiveRecord::Base
   has_many :votes
 
   has_many :join_requests
-  belongs_to :group, dependent: :destroy
+  has_many :join_to_me_requests, class: 'JoinRequest', inverse_of: :to_idea
+  
+  belongs_to :represented_by, class_name: 'Idea', inverse_of: :representing
+  has_many :representing, class_name: 'Idea', inverse_of: :represented_by, foreign_key: :represented_by_id
+  
+  belongs_to :merged_to, class_name: 'Idea'
 
   default_scope { order(created_at: :desc) }
   validates :content, presence: true, length: { maximum: 1400 }
@@ -15,6 +20,22 @@ class Idea < ActiveRecord::Base
 
   before_save :add_hashtags_to_tags
   after_update :save_assets
+
+  def self.create_with_merge!(merge_to,merged)
+    self.create!(title:merge_to.title,content:(merged.content||"")+"\n\n>>>MERGE:\n"+(merged.title||"")+"\n"+(merged.content||""),user:merge_to.user)
+  end
+  
+  def self.unmerged
+    where(merged_to_id:nil)
+  end
+  
+  def representing_and_self
+    Idea.where('ideas.represented_by_id = ? or id = ?',self.id,self.id)
+  end
+  
+  def self.users
+    User.where(id:reorder('').uniq(:user_id).pluck(:user_id))
+  end
 
   def new_asset_attributes=(asset_attributes)
     asset_attributes.each do |attributes|
@@ -41,18 +62,6 @@ class Idea < ActiveRecord::Base
     end
   end
 
-  def group
-    super || do_create_group
-  end
-
-  def has_group?
-    self.group_id != nil
-  end
-
-  def is_in_group?
-    self.group_id != nil and self.group.size > 1
-  end
-
   def add_hashtags_to_tags
     self.tag_list=Twitter::Extractor::extract_hashtags(self.content).join(",")
   end
@@ -66,11 +75,7 @@ class Idea < ActiveRecord::Base
   end
 
   def join_to_me_requests
-    if has_group?
-      return self.group.join_requests
-    else
-      return []
-    end
+    self.join_to_requests
   end
   
   include PgSearch
@@ -88,7 +93,7 @@ class Idea < ActiveRecord::Base
   private
 
   def do_create_group
-    ret = self.create_group!
+    ret = self.create_group!(idea:self)
     self.save!
     ret
   end

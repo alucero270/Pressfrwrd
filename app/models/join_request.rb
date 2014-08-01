@@ -1,18 +1,24 @@
 class JoinRequest < ActiveRecord::Base
   belongs_to :group
   belongs_to :idea
-  has_many :users, through: {group: :ideas}
+  belongs_to :to_idea, class_name: 'Idea'
+
   has_many :votes
 
   after_create :create_votes
 
-  validates :group, presence: true
+  validates :to_idea, presence: true
   validates :idea, presence: true
 
   def accept!
     self.update_attribute(:status,:accepted)
-    group.ideas << idea
-    group_extended(group)
+    
+    idea.merged_to=to_idea
+    idea.merged_on=DateTime.now
+    new_idea = Idea.create_with_merge!(to_idea,idea)
+    to_idea.update!(represented_by:new_idea)
+    idea.update!(represented_by:new_idea)
+    new_idea
   end
 
   enum status: [:pending, :accepted, :rejected]
@@ -35,7 +41,7 @@ class JoinRequest < ActiveRecord::Base
 
   def create_votes
     users = Set[]
-    self.group.users.each do |user|
+    self.to_idea.representing_and_self.users.each do |user|
       votes.create!(user:user)
     end
   end

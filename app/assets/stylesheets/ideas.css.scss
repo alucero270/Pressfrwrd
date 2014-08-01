@@ -34,6 +34,7 @@ form.post-idea {
         position: relative;
         overflow: hidden;
     }
+		
     div.form-group {
         label.control-label {
             @extend .col-md-3;
@@ -59,7 +60,7 @@ form.post-idea {
                     @extend .col-xs-1;
                 }
             }
-
+						
         }
         textarea#idea_content {
             height: 10*$line-height-computed;

@@ -1,21 +1,26 @@
 require 'spec_helper'
 describe JoinRequest do
-  subject { FactoryGirl::create(:join_request) }
+  subject { create(:join_request) }
   it { should respond_to(:idea) }
-  it { should respond_to(:group) }
+  it { should respond_to(:to_idea) }
 
   describe "accept!" do
     before do
-      @idea_to_join = FactoryGirl::create(:idea)
-      @group = @idea_to_join.group
-      @idea = FactoryGirl::create(:idea)
-      @join_request = JoinRequest.create(idea:@idea,group:@group)
+      @idea_to_join = create(:idea)
+      @idea = create(:idea)
+      @join_request = JoinRequest.create
+      @join_request = JoinRequest.create(idea_id:@idea.id,to_idea_id:@idea_to_join.id)
     end
 
     it "should add idea to group" do
       @join_request.accept!
-      expect(@group.ideas).to match_array([@idea,@idea_to_join])
-      expect(Group.find(@group.id).ideas).to match_array([@idea,@idea_to_join])
+      @idea.reload ; @idea_to_join.reload
+      @new_idea = @idea.represented_by
+      expect(@idea.represented_by).to eq(@new_idea)
+      expect(@idea_to_join.represented_by).to eq(@new_idea)
+      expect(@idea.merged_to).to eq(@idea_to_join)
+      expect(@idea.merged_on).to be_within(1.hours).of(DateTime.now)
+      expect(@new_idea.representing).to match_array([@idea,@idea_to_join])
     end
     
     it "should change request status to accepted" do
@@ -27,30 +32,29 @@ describe JoinRequest do
 
   describe "votes" do
     before do
-      @idea_to_join = FactoryGirl::create(:idea)
-      @group = @idea_to_join.group
-      @idea = FactoryGirl::create(:idea)
+      @idea_to_join = create(:idea)
+      @idea = create(:idea)
     end
 
     it "should create votes" do
-      @join_request = JoinRequest.create(idea:@idea,group:@group)
-      expect(@join_request.votes.size).to eq(@group.ideas.size)
-      expect(@join_request.votes.map {|v| v.user }).to match_array(@group.users)
+      @join_request = JoinRequest.create(idea:@idea,to_idea:@idea_to_join)
+      expect(@join_request.votes.size).to eq(@idea_to_join.representing_and_self.size)
+      expect(@join_request.votes.map {|v| v.user }).to match_array(@idea_to_join.representing_and_self.users)
     end
     
     it "should create votes when a new group is added" do
-      @join_request = JoinRequest.create(idea:@idea,group:@group)
-      expect(@join_request.votes.map {|v| v.user }).to match_array(@group.users)
+      @join_request = JoinRequest.create(idea:@idea,to_idea:@idea_to_join)
+      expect(@join_request.votes.map {|v| v.user }).to match_array(@idea_to_join.representing_and_self.users)
       @idea2 = FactoryGirl::create(:idea)
-      @join_request2 = JoinRequest.create(idea:@idea,group:@group)
+      @join_request2 = JoinRequest.create(idea:@idea,to_idea:@idea_to_join)
       @join_request2.accept!
-      expect(@join_request.reload.votes.size).to equal(@group.ideas.size)
-      expect(@join_request.votes.map {|v| v.user }).to match_array(@group.reload.users)
+      expect(@join_request.reload.votes.size).to equal(@idea_to_join.representing_and_self.size)
+      expect(@join_request.votes.map {|v| v.user }).to match_array(@idea_to_join.reload.representing_and_self.users)
     end
     
-    it "should reject/accept idea when majority reached" do
-      @join_request = JoinRequest.create(idea:@idea,group:@group)
-      @vote = @join_request.votes.find_by(user:@group.ideas.first.user)
+    it "should accept idea when majority reached" do
+      @join_request = JoinRequest.create(idea:@idea,to_idea:@idea_to_join)
+      @vote = @join_request.votes.find_by(user:@idea_to_join.representing_and_self.first.user)
       expect(@join_request.pending?).to be_truthy
       expect(@join_request.accepted?).to be_falsey
       @vote.accepted!
@@ -58,11 +62,21 @@ describe JoinRequest do
       expect(@join_request.reload.pending?).to be_falsey
     end
 
-    it "should join a group when accepted" do
-      @join_request = JoinRequest.create(idea:@idea,group:@group)
-      @vote = @join_request.votes.find_by(user:@group.ideas.first.user)
+    it "should reject idea when majority reached" do
+      @join_request = JoinRequest.create(idea:@idea,to_idea:@idea_to_join)
+      @vote = @join_request.votes.find_by(user:@idea_to_join.representing_and_self.first.user)
+      expect(@join_request.pending?).to be_truthy
+      expect(@join_request.accepted?).to be_falsey
+      @vote.rejected!
+      expect(@join_request.reload.accepted?).to be_falsey
+      expect(@join_request.reload.pending?).to be_truthy
+    end
+
+    it "should join a idea when accepted" do
+      @join_request = JoinRequest.create(idea:@idea,to_idea:@idea_to_join)
+      @vote = @join_request.votes.find_by(user:@idea_to_join.representing_and_self.first.user)
       @vote.accepted!
-      expect(@join_request.reload.group.ideas).to include(@idea)
+      expect(@join_request.reload.to_idea.represented_by.representing).to include(@idea)
     end
   end
 end

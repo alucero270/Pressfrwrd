@@ -20,6 +20,6 @@ FactoryGirl.define do
 
   factory :join_request do
     association :idea
-    association :group
+    association :to_idea, factory: :idea
   end
 end
