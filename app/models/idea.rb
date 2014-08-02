@@ -7,7 +7,7 @@ class Idea < ActiveRecord::Base
   has_many :votes
 
   has_many :join_requests
-  has_many :join_to_me_requests, class: 'JoinRequest', inverse_of: :to_idea
+  has_many :join_to_me_requests, class_name: 'JoinRequest', foreign_key: :to_idea_id
   
   belongs_to :represented_by, class_name: 'Idea', inverse_of: :representing
   has_many :representing, class_name: 'Idea', inverse_of: :represented_by, foreign_key: :represented_by_id
@@ -72,10 +72,6 @@ class Idea < ActiveRecord::Base
                          WHERE follower_id = :user_id"
     where("user_id IN (#{followed_user_ids}) OR user_id = :user_id", 
           user_id: user.id)
-  end
-
-  def join_to_me_requests
-    self.join_to_requests
   end
   
   include PgSearch

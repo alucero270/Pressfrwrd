@@ -8,7 +8,6 @@ describe JoinRequest do
     before do
       @idea_to_join = create(:idea)
       @idea = create(:idea)
-      @join_request = JoinRequest.create
       @join_request = JoinRequest.create(idea_id:@idea.id,to_idea_id:@idea_to_join.id)
     end
 
@@ -27,6 +26,15 @@ describe JoinRequest do
       expect(@join_request).to be_pending
       @join_request.accept!
       expect(@join_request).to be_accepted
+    end
+    
+    it "should migrate existing pending join requests" do
+      @user2 = create(:user)
+      @idea2 = create(:idea,user:@user2)
+      @join_request2 = create(:join_request,idea:@idea2,to_idea:@idea_to_join)
+      expect(@idea_to_join.join_to_me_requests).to include(@join_request,@join_request2)
+      @new_idea = @join_request.accept!
+      expect(@new_idea.reload.join_to_me_requests).to include(@join_request2)
     end
   end
 
