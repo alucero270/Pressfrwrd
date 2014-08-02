@@ -4,7 +4,7 @@ class JoinRequestsController < ApplicationController
   def create
     idea = current_user.ideas.find_by(id:params[:idea])
     idea_to_join = Idea.find_by(id:params[:idea_to_join])
-    join_request = JoinRequest.new(idea:idea, group:idea_to_join.group)
+    join_request = JoinRequest.new(idea:idea, to_idea:idea_to_join)
     if join_request.save!
       flash.notice = "Join requests sent"
       redirect_to :back

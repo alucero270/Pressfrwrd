@@ -28,13 +28,21 @@ class Idea < ActiveRecord::Base
   def self.unmerged
     where(merged_to_id:nil)
   end
-  
+
+  def self.users
+    User.where(id:reorder('').uniq(:user_id).pluck(:user_id))
+  end
+
   def representing_and_self
     Idea.where('ideas.represented_by_id = ? or id = ?',self.id,self.id)
   end
-  
-  def self.users
-    User.where(id:reorder('').uniq(:user_id).pluck(:user_id))
+
+  def editable?
+    represented_by.blank?
+  end
+
+  def editable_by?(user)
+    representing_and_self.users.includes?(self.user_id)
   end
 
   def new_asset_attributes=(asset_attributes)

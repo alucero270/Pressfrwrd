@@ -1,4 +1,7 @@
 class AddRepresentiveIdeaToGroups < ActiveRecord::Migration
+  class JoinRequest < ActiveRecord::Base 
+    
+  end
   def change
     add_reference :ideas, :represented_by, index: true
     add_reference :ideas, :merged_to, index: true
@@ -9,6 +12,8 @@ class AddRepresentiveIdeaToGroups < ActiveRecord::Migration
         remove_reference :join_requests, :group
         remove_reference :ideas, :group, index: true
         drop_table :groups
+        JoinRequest.reset_column_information
+        JoinRequest.delete_all
       end
       dir.down do
         add_reference :join_requests, :group, index: true
@@ -16,6 +21,8 @@ class AddRepresentiveIdeaToGroups < ActiveRecord::Migration
         create_table :groups do |t|
           t.timestamp
         end
+        JoinRequest.reset_column_information
+        JoinRequest.delete_all
       end
     end
   end

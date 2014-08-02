@@ -1,4 +1,4 @@
-<h3><%= @join_request.idea.user.name %> wants to join his idea named '<%= @join_request.idea.title %>' to these ideas: <%= @join_request.group.ideas.pluck(:title).map{|t| "\'"+t+"\'"}.join(", ") %></h3>
+<h3><%= @join_request.idea.user.name %> wants to join his idea named '<%= @join_request.idea.title %>' to these ideas: <%= @join_request.to_idea.title %></h3>
 <h4>This request is: <%= @join_request.status %></h4>
 <span>Votes: pending count=<%= @join_request.votes.pending.count %> accepted count=<%= @join_request.votes.accepted.count %> rejected count=<%= @join_request.votes.rejected.count %>
 <% if @current_users_vote.pending? %>
@@ -13,7 +13,7 @@
         <%= render partial: @join_request.idea, locals: { options: {show_edit:false}} %> 
     </div>
     <div class="join-to-ideas col-md-7">
-        <h3>Ideas to be joined</h3>
-        <%= render partial: @join_request.group.ideas, locals: { options: {show_edit:false}} %> 
+        <h3>Idea to be joined</h3>
+        <%= render partial: @join_request.to_idea, locals: { options: {show_edit:false}} %> 
     </div>
 </div>

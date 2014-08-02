@@ -36,7 +36,7 @@
         <div class="group-info">
           This idea is merged into <%= idea.represented_by.title %> ideas. Peers:
           <ul>
-          <% idea.represented_by.representing.not(id:idea.id).each do |idea_in_group|%>
+          <% idea.represented_by.representing.where.not(id:idea.id).each do |idea_in_group|%>
             <li class="group-member"><%= link_to idea_in_group.title, idea_in_group %></li>
           <% end %>
           </ul>

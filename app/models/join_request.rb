@@ -12,11 +12,12 @@ class JoinRequest < ActiveRecord::Base
 
   validates :to_idea, presence: true
   validates :idea, presence: true
+  validates_uniqueness_of :idea_id, scope: :to_idea_id, message: "has already a join request to this idea"
   
   scope :not_accepted, ->{ where.not(status: JoinRequest.statuses[:accepted]) }
 
   def accept!
-    self.update_attribute(:status,:accepted)
+    self.update!(status: :accepted)
     idea.merged_to=to_idea
     idea.merged_on=DateTime.now
     new_idea = Idea.create_with_merge!(to_idea,idea)
@@ -25,11 +26,14 @@ class JoinRequest < ActiveRecord::Base
     to_idea.join_to_me_requests.not_accepted.each do |request|
       request.migrate_to(new_idea)
     end
-    byebug
     idea.join_to_me_requests.not_accepted.each do |request|
       request.migrate_to(new_idea)
     end
     new_idea
+  end
+
+  def reject!
+    self.update!(status: :rejected)
   end
 
   enum status: [:pending, :accepted, :rejected]
@@ -37,6 +41,8 @@ class JoinRequest < ActiveRecord::Base
   def auto_set_status
     if votes.accepted.count > votes.count/2 then
       self.accept!
+    elsif votes.rejected.count >= votes.count/2 then
+      self.reject!
     end
   end
   
