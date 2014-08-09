@@ -5,6 +5,7 @@ class JoinRequest < ActiveRecord::Base
   belongs_to :group
   belongs_to :idea
   belongs_to :to_idea, class_name: 'Idea', inverse_of: :join_to_me_requests
+  belongs_to :merged_into, class_name: 'Idea'
 
   has_many :votes
 
@@ -17,12 +18,10 @@ class JoinRequest < ActiveRecord::Base
   scope :not_accepted, ->{ where.not(status: JoinRequest.statuses[:accepted]) }
 
   def accept!
-    self.update!(status: :accepted)
-    idea.merged_to=to_idea
-    idea.merged_on=DateTime.now
     new_idea = Idea.create_with_merge!(to_idea,idea)
-    to_idea.update!(represented_by:new_idea)
-    idea.update!(represented_by:new_idea)
+    self.update!(status: :accepted,merged_into_id:new_idea.id)
+    to_idea.update!(represented_by:new_idea,merged_into_id:new_idea.id)
+    idea.update!(represented_by:new_idea,merged_to_id:to_idea.id,merged_into_id:new_idea.id,merged_on:DateTime.now)
     to_idea.join_to_me_requests.not_accepted.each do |request|
       request.migrate_to(new_idea)
     end
@@ -34,6 +33,7 @@ class JoinRequest < ActiveRecord::Base
 
   def reject!
     self.update!(status: :rejected)
+    nil
   end
 
   enum status: [:pending, :accepted, :rejected]
@@ -41,8 +41,10 @@ class JoinRequest < ActiveRecord::Base
   def auto_set_status
     if votes.accepted.count > votes.count/2 then
       self.accept!
-    elsif votes.rejected.count >= votes.count/2 then
+    elsif votes.rejected.count >= (votes.count+1)/2 then
       self.reject!
+    else
+      nil
     end
   end
   

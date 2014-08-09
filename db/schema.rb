@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140731160802) do
+ActiveRecord::Schema.define(version: 20140809100957) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 20140731160802) do
     t.integer  "represented_by_id"
     t.integer  "merged_to_id"
     t.datetime "merged_on"
+    t.integer  "merged_into_id"
   end
 
   add_index "ideas", ["merged_to_id"], name: "index_ideas_on_merged_to_id", using: :btree
@@ -41,8 +42,9 @@ ActiveRecord::Schema.define(version: 20140731160802) do
 
   create_table "join_requests", force: true do |t|
     t.integer "idea_id"
-    t.integer "status",     default: 0
+    t.integer "status",         default: 0
     t.integer "to_idea_id"
+    t.integer "merged_into_id"
   end
 
   add_index "join_requests", ["idea_id"], name: "index_join_requests_on_idea_id", using: :btree

@@ -7,6 +7,14 @@
 <% else %>
     You've already <%= @current_users_vote.status %> this request.
 <% end %>
+<% if @merged_idea.present? %>
+<div class="row">
+    <div class="joiner-idea col-md-5">
+        <h3>Merged idea</h3>
+        <%= render partial: @merged_idea, locals: { options: {show_edit:true}} %> 
+    </div>
+</div>
+<% end %>
 <div class="row">
     <div class="joiner-idea col-md-5">
         <h3>Idea to join</h3>

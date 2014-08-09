@@ -1,5 +1,12 @@
 @import "bootstrap";
 
+.alert-notice {
+	@extend .alert-info;
+}
+.alert-alert {
+	@extend .alert-warning;
+}
+
 form.post-idea {
     @extend .form-horizontal;
     .post-button {

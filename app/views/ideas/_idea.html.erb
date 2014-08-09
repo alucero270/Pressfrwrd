@@ -1,4 +1,4 @@
-<% options ||= {} ; options = {show_edit:true,show_join:false,show_requests:false,show_group:true}.merge(options) %>
+<% options ||= {} ; options = {show_edit:true,show_join:false,show_requests:true,show_group:true}.merge(options) %>
 <div class="idea">
   <div class="idea-heading">
     <% if options[:show_join] %>
@@ -10,7 +10,7 @@
     <div class="clearfix"> </div>
   </div>
   <div class="idea-body">
-    <span class="content"><%= idea.content %></span>
+    <span class="content"><%= h(idea.content).gsub("\r\n","<br/>").html_safe %></span>
     <span class="images">
       <% for asset in idea.assets %>
         <% if !(asset.file.content_type =~ /^image/).nil? %>
@@ -34,7 +34,7 @@
       </div>
       <% if options[:show_group] and idea.represented_by.present? %>
         <div class="group-info">
-          This idea is merged into <%= idea.represented_by.title %> ideas. Peers:
+          This idea is merged into <%= link_to idea.represented_by.title, idea.represented_by %>. Peers:
           <ul>
           <% idea.represented_by.representing.where.not(id:idea.id).each do |idea_in_group|%>
             <li class="group-member"><%= link_to idea_in_group.title, idea_in_group %></li>
@@ -42,7 +42,7 @@
           </ul>
         </div>
       <% end %>
-      <% if options[:show_edit] and current_user?(idea.user) %>
+      <% if options[:show_edit] && idea.editable_by?(current_user) %>
         <%= link_to "edit", url_for([:edit,idea]), class: "btn edit-button" %>
         <%= link_to "delete", idea, method: :delete,
                                          data: { confirm: 'Are you sure?' },
@@ -50,7 +50,7 @@
                                          class: "btn delete-button" %>
         <%= link_to 'similiar', similiar_idea_path(idea), class: "btn simliar-button" %>
       <% end %>
-      <% if options[:show_requests] and idea.user_id == current_user.id %>
+      <% if options[:show_requests] && current_user && idea.user_id == current_user.id %>
         <%= render partial: 'ideas/join_requests', locals: {idea: idea} %>
       <% end %>
     </div>

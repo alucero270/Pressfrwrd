@@ -8,11 +8,12 @@ class Idea < ActiveRecord::Base
 
   has_many :join_requests
   has_many :join_to_me_requests, class_name: 'JoinRequest', foreign_key: :to_idea_id
-  
+
   belongs_to :represented_by, class_name: 'Idea', inverse_of: :representing
   has_many :representing, class_name: 'Idea', inverse_of: :represented_by, foreign_key: :represented_by_id
-  
+
   belongs_to :merged_to, class_name: 'Idea'
+  belongs_to :merged_into, class_name: 'Idea'
 
   default_scope { order(created_at: :desc) }
   validates :content, presence: true, length: { maximum: 1400 }
@@ -22,7 +23,7 @@ class Idea < ActiveRecord::Base
   after_update :save_assets
 
   def self.create_with_merge!(merge_to,merged)
-    self.create!(title:merge_to.title,content:(merged.content||"")+"\n\n>>>MERGE:\n"+(merged.title||"")+"\n"+(merged.content||""),user:merge_to.user)
+    self.create!(title:merge_to.title,content:(merge_to.content||"")+"\r\n>>>MERGE:\r\n"+(merged.title||"")+"\r\n"+(merged.content||""),user:merge_to.user)
   end
   
   def self.unmerged
@@ -42,8 +43,11 @@ class Idea < ActiveRecord::Base
   end
 
   def editable_by?(user)
-    representing_and_self.users.includes?(self.user_id)
+    user.present? && representing_and_self.users.include?(user)
   end
+
+  # non superseeding
+  # where(represented_by:nil or )
 
   def new_asset_attributes=(asset_attributes)
     asset_attributes.each do |attributes|
@@ -76,10 +80,9 @@ class Idea < ActiveRecord::Base
 
   # Returns ideas from the users being followed by the given user.
   def self.from_users_followed_by(user)
-    followed_user_ids = "SELECT followed_id FROM relationships
-                         WHERE follower_id = :user_id"
-    where("user_id IN (#{followed_user_ids}) OR user_id = :user_id", 
-          user_id: user.id)
+    followed_user_ids = user.followed_user_ids_or_self
+    joins('LEFT OUTER JOIN ideas i2 ON i2.represented_by_id = ideas.id').
+    where('(ideas.represented_by_id is NULL and ideas.user_id in (?)) OR (i2.user_id in (?))',followed_user_ids,followed_user_ids).distinct(:id)
   end
   
   include PgSearch

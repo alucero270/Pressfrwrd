@@ -18,8 +18,10 @@ describe JoinRequest do
       expect(@idea.represented_by).to eq(@new_idea)
       expect(@idea_to_join.represented_by).to eq(@new_idea)
       expect(@idea.merged_to).to eq(@idea_to_join)
+      expect(@idea.merged_into).to eq(@new_idea)
       expect(@idea.merged_on).to be_within(1.hours).of(DateTime.now)
       expect(@new_idea.representing).to match_array([@idea,@idea_to_join])
+      expect(@join_request.merged_into).to eq(@new_idea)
     end
     
     it "should change request status to accepted" do
@@ -50,11 +52,11 @@ describe JoinRequest do
       expect(@join_request.votes.map {|v| v.user }).to match_array(@idea_to_join.representing_and_self.users)
     end
     
-    it "should create votes when a new group is added" do
-      @join_request = JoinRequest.create(idea:@idea,to_idea:@idea_to_join)
+    it "should create votes when a join request is accepted to another" do
+      @join_request = JoinRequest.create!(idea:@idea,to_idea:@idea_to_join)
       expect(@join_request.votes.map {|v| v.user }).to match_array(@idea_to_join.representing_and_self.users)
       @idea2 = FactoryGirl::create(:idea)
-      @join_request2 = JoinRequest.create(idea:@idea,to_idea:@idea_to_join)
+      @join_request2 = JoinRequest.create!(idea:@idea2,to_idea:@idea_to_join)
       @join_request2.accept!
       expect(@join_request.reload.votes.size).to equal(@idea_to_join.representing_and_self.size)
       expect(@join_request.votes.map {|v| v.user }).to match_array(@idea_to_join.reload.representing_and_self.users)
@@ -77,7 +79,8 @@ describe JoinRequest do
       expect(@join_request.accepted?).to be_falsey
       @vote.rejected!
       expect(@join_request.reload.accepted?).to be_falsey
-      expect(@join_request.reload.pending?).to be_truthy
+      expect(@join_request.reload.pending?).to be_falsey
+      expect(@join_request.reload.rejected?).to be_truthy
     end
 
     it "should join a idea when accepted" do

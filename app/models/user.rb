@@ -32,6 +32,14 @@ class User < ActiveRecord::Base
     relationships.find_by(followed_id: other_user.id)
   end
 
+  def followed_user_ids
+    Relationship.where(follower_id: self.id).pluck(:followed_id)
+  end
+
+  def followed_user_ids_or_self
+    self.followed_user_ids + [self.id]
+  end
+
   def follow!(other_user)
     relationships.create!(followed_id: other_user.id)
   end

@@ -22,7 +22,12 @@ class IdeasController < ApplicationController
   end
 
   def edit
-    @idea = current_user.ideas.find(params[:id])
+    @idea = Idea.find(params[:id])
+    raise ActiveRecord::RecordNotFound.new("Idea #{params[:id]} is not editable by this user") unless @idea.editable_by?(current_user)
+    if !@idea.editable?
+      flash.alert = "This idea was merged to another one, redirected to the idea it was merged to"
+      return redirect_to edit_idea_path(@idea.represented_by)
+    end
   end
 
   def update
