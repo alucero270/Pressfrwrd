@@ -18,6 +18,10 @@ FactoryGirl.define do
   factory :group do
   end
 
+  factory :asset do
+    file { File.new(Rails.root.join('app', 'assets', 'images', 'rails.png')) }
+  end
+
   factory :join_request do
     association :idea
     association :to_idea, factory: :idea

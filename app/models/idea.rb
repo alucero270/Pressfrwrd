@@ -23,7 +23,14 @@ class Idea < ActiveRecord::Base
   after_update :save_assets
 
   def self.create_with_merge!(merge_to,merged)
-    self.create!(title:merge_to.title,content:(merge_to.content||"")+"\r\n>>>MERGE:\r\n"+(merged.title||"")+"\r\n"+(merged.content||""),user:merge_to.user)
+    ret = self.create!(title:merge_to.title,content:(merge_to.content||"")+"\r\n>>>MERGE:\r\n"+(merged.title||"")+"\r\n"+(merged.content||""),user:merge_to.user)
+    merge_to.assets.each do |asset|
+      ret.assets.create! file:asset.file
+    end
+    merged.assets.each do |asset|
+      ret.assets.create! file:asset.file
+    end
+    ret
   end
   
   def self.unmerged

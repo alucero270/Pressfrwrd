@@ -47,6 +47,19 @@ describe Idea do
     end
   end
 
+  describe "create_with_merge" do
+    before do
+      @merge_to = create(:idea,title:'merge_to_title',content:'merge_to_body',user:create(:user),assets:create_list(:asset,3))
+      @merged = create(:idea,title:'merged_title',content:'merged_body',user:create(:user),assets:create_list(:asset,2))
+    end
+    subject { Idea.create_with_merge!(@merge_to,@merged) }
+    it "should merge two ideas" do
+      expect(subject.title).to eq(@merge_to.title)
+      expect(subject.content).to include(@merge_to.content,@merged.content,@merged.title)
+      expect(subject.assets.count).to eq(@merge_to.assets.count+@merged.assets.count)
+    end
+  end
+
   describe "hashtags" do
     context "when saving with hashtag in context" do
       before do
