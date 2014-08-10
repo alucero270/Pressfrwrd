@@ -19,7 +19,6 @@ describe "User pages" do
       before(:all) { 30.times { FactoryGirl.create(:user) } }
       after(:all)  { User.delete_all }
 
-
       it { should have_link('Next') }
       its(:html) { should match('>2</a>') }
       it { should have_selector('.pagination') }
@@ -57,7 +56,6 @@ describe "User pages" do
     end
 
     describe "delete links" do
-
       it { should_not have_link('delete') }
 
       describe "as an admin user" do
@@ -74,6 +72,51 @@ describe "User pages" do
           end.to change(User, :count).by(-1)
         end
         it { should_not have_link('delete', href: user_path(admin)) }
+      end
+    end
+
+    describe "set clear admin links" do
+      it { is_expected.not_to have_link('set admin') }
+
+      describe "as an admin user" do
+        let(:admin) { FactoryGirl.create(:admin) }
+        before do
+          sign_in admin
+          visit users_path
+        end
+
+        it { is_expected.to have_link('set admin', href: update_admin_user_path(User.first,set_admin:true)) }
+        it { is_expected.not_to have_link('remove admin', href: update_admin_user_path(User.first,set_admin:false)) }
+        it "should be change" do
+          click_link('set admin', match: :first)
+          expect(User.first.admin).to eq(true)
+          expect(page).to have_link('remove admin')
+          click_link('remove admin', match: :first)
+          expect(User.first.admin).to eq(false)
+        end
+      end
+    end
+    
+    describe "show emails" do
+      describe "as an normal user" do
+        before do
+          @other_user = create(:user)
+          @user = create(:user)
+          sign_in @user
+          visit users_path
+        end
+        
+        it { is_expected.not_to have_content(@other_user.email)}
+      end
+      describe "as an admin user" do
+        before do
+          @other_user = create(:user)
+          @admin = create(:admin)
+          sign_in @admin
+          visit users_path
+        end
+        
+        it { is_expected.to have_content(@other_user.email)}
       end
     end
   end
