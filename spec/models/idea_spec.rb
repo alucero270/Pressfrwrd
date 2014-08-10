@@ -47,6 +47,20 @@ describe Idea do
     end
   end
 
+  describe "similar" do
+    before do
+      @idea1 = create(:idea,content:'red green blue')
+      @idea2 = create(:idea,content:'black white')
+      @idea3 = create(:idea,content:'black green')
+    end
+    it "should not include itself" do
+      expect(@idea1.similiar).not_to include(@idea1)
+    end
+    it "should include similiar" do
+      expect(@idea1.similiar).to eq([@idea3])
+    end
+  end
+
   describe "create_with_merge" do
     before do
       @merge_to = create(:idea,title:'merge_to_title',content:'merge_to_body',user:create(:user),assets:create_list(:asset,3))

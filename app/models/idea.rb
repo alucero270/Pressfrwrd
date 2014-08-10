@@ -32,7 +32,11 @@ class Idea < ActiveRecord::Base
     end
     ret
   end
-  
+
+  def self.active
+    where(represented_by:nil)
+  end
+
   def self.unmerged
     where(merged_to_id:nil)
   end
@@ -43,6 +47,10 @@ class Idea < ActiveRecord::Base
 
   def representing_and_self
     Idea.where('ideas.represented_by_id = ? or id = ?',self.id,self.id)
+  end
+
+  def similiar
+    Idea.active.where.not(id:self.id).text_search(self.content)
   end
 
   def editable?
@@ -98,7 +106,7 @@ class Idea < ActiveRecord::Base
   
   def self.text_search(query)
     if query.present?
-      unscoped.search(query)
+      unscope(:order).search(query)
     else
       all
     end

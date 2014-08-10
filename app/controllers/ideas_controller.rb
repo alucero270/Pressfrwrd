@@ -54,7 +54,7 @@ class IdeasController < ApplicationController
   
   def similiar
     @idea = Idea.find(params[:id])
-    @similiar_ideas = Idea.text_search(@idea.content).where('ideas.id <> ?',@idea.id).page(params[:page]).per(3)
+    @similiar_ideas = @idea.similiar.page(params[:page]).per(3)
   end
 
   def join
