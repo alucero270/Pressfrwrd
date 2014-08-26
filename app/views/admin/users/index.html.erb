@@ -1,0 +1,10 @@
+<table class="user-list table table-striped table-bordered">
+    <tr>
+        <th>id</th><th>user</th><th>email</th>
+    </tr>
+<% @users.each do |user| %>
+    <tr>
+        <td><%=user.id%><td><%=user.name%></td> <td><%=user.email%></td>
+    </tr>
+<% end %>
+</table>

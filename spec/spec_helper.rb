@@ -1,7 +1,6 @@
 require 'rubygems'
-require 'spork'
 
-Spork.prefork do
+begin
   ENV["RAILS_ENV"] ||= 'test'
   require File.expand_path("../../config/environment", __FILE__)
   require 'rspec/rails'
@@ -49,6 +48,9 @@ Spork.prefork do
 
     # Include the factory girl to create
     config.include FactoryGirl::Syntax::Methods
+    
+    # TODO add manually
+    config.infer_spec_type_from_file_location!
 
     # Disable the old-style object.should syntax.
     config.expect_with :rspec do |c|
@@ -57,7 +59,3 @@ Spork.prefork do
   end
 end
 
-Spork.each_run do
-  # This code will be run each time you run your specs.
-
-end

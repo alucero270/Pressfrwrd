@@ -1,13 +1,25 @@
 Pressfrwrd::Application.routes.draw do
+  namespace :admin do
+    resources :users, only: [:index]
+  end
+
   resources :users do
     member do
       get :following, :followers
+      put :update_admin
     end
   end
   resources :sessions,      only: [:new, :create, :destroy]
-  resources :ideas,         only: [:index, :create, :destroy] do
+  resources :ideas,         only: [:index, :create, :destroy, :new, :show, :edit, :update] do
     member do
       get 'similiar'
+    end
+  end
+  
+  resources :join_requests, only: [:create, :update, :show] do
+    member do
+      put 'accept'
+      put 'reject'
     end
   end
   resources :relationships, only: [:create, :destroy]

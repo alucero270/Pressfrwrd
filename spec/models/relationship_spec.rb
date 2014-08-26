@@ -13,8 +13,8 @@ describe Relationship do
   describe "follower methods" do    
     it { should respond_to(:follower) }
     it { should respond_to(:followed) }
-    its(:follower) { should eq follower }
-    its(:followed) { should eq followed }
+    it("followers") do expect(subject.follower).to eq(follower) end
+    it("followed") do expect(subject.followed).to eq(followed) end
   end
 
   describe "when followed id is not present" do

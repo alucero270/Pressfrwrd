@@ -124,6 +124,14 @@ describe User do
     it { should be_invalid }
   end
 
+  describe "modifing an existing user" do
+    before { @user.save! ; @user = User.find(@user.id) }
+    it "should be valid when not modifying password" do
+      @user.admin=true
+      @user.save!
+    end
+  end
+
   describe "return value of authenticate method" do
     before { @user.save }
     let(:found_user) { User.find_by(email: @user.email) }
@@ -142,7 +150,7 @@ describe User do
 
   describe "remember token" do
     before { @user.save! }
-    its(:remember_token) { should_not be_blank }
+    it { expect(subject.remember_token).not_to be_blank }
   end
 
   describe "ideas associations" do
@@ -180,12 +188,12 @@ describe User do
         3.times { followed_user.ideas.create!(content: "Lorem ipsum") }
       end
 
-      its(:feed) { should include(newer_idea) }
-      its(:feed) { should include(older_idea) }
-      its(:feed) { should_not include(unfollowed_idea) }
-      its(:feed) do
+      it { expect(subject.feed).to include(newer_idea) }
+      it { expect(subject.feed).to include(older_idea) }
+      it { expect(subject.feed).not_to include(unfollowed_idea) }
+      it do
         followed_user.ideas.each do |idea|
-          should include(idea)
+          expect(subject.feed).to include(idea)
         end
       end
     end
@@ -199,18 +207,18 @@ describe User do
     end
 
     it { should be_following(other_user) }
-    its(:followed_users) { should include(other_user) }
+    it { expect(subject.followed_users).to include(other_user) }
 
     describe "followed user" do
       subject { other_user }
-      its(:followers) { should include(@user) }
+      it { expect(subject.followers).to include(@user) }
     end
 
     describe "and unfollowing" do
       before { @user.unfollow!(other_user) }
 
       it { should_not be_following(other_user) }
-      its(:followed_users) { should_not include(other_user) }
+      it { expect(subject.followed_users).not_to include(other_user) }
     end
   end
 end

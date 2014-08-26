@@ -3,6 +3,11 @@
 
 ## Getting started
 
+You need postgre sql, on mac you can install it like:
+
+    $ brew install postgresql
+    $ pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+
 ### run tests
 
     $ cp config/database.yml.example config/database.yml
@@ -24,11 +29,13 @@ Then we push to staging to staging repo's master with:
 
     $ git remote add staging git@heroku.com:pressfrwrd-staging.git
     $ git push staging master:master
+    $ heroku run rake db:migrate --app pressfrwrd-staging
     
-Once staging is ok, we use github to merge staging to production then. We push to production with:
+Once staging is ok, we use github to merge staging to production then.  We make a pull request to production branch with: https://github.com/alucero270/Pressfrwrd/compare/production...master
 
     $ git remote add production git@heroku.com:pressfrwrd.git
     $ git push production production:master
+    $ heroku run rake db:migrate --app pressfrwrd
 
 #### Create staging and prod instances
 
@@ -48,6 +55,13 @@ Once staging is ok, we use github to merge staging to production then. We push t
 
 #### Run migrations:
 
-    $ heroku rake db:migrate --app pressrfwrd-staging
+    $ heroku run rake db:migrate --app pressrfwrd-staging
+
+#### Administration
+
+To make an user admin you have to do this:
+
+    $ heroku run rails console --app pressfrwrd-staging
+    $ User.find_by(email:'mfazekas@szemafor.com').update(admin:true)
 
 

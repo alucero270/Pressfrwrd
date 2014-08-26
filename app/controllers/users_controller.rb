@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :signed_in_user,
                 only: [:index, :edit, :update, :destroy, :following, :followers]
   before_action :correct_user,   only: [:edit, :update]
-  before_action :admin_user,     only: :destroy
+  before_action :admin_user,     only: [:destroy, :update_admin]
 
   def index
     @users = User.page(params[:page])
@@ -21,8 +21,8 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       sign_in @user
-      flash[:success] = "Welcome to the Sample App!"
-      redirect_to @user
+      flash[:success] = "Welcome to Pressfrwrd!"
+      redirect_to :root
     else
       render 'new'
     end
@@ -39,6 +39,15 @@ class UsersController < ApplicationController
     else
       render 'edit'
     end
+  end
+
+  # admin only
+  def update_admin
+    @user = User.find(params[:id])
+    set_admin = params[:set_admin]
+    @user.update!(admin:set_admin)
+    flash[:success] = "Admin changed to #{set_admin}"
+    redirect_to :back
   end
 
   def destroy

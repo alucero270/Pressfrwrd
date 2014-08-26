@@ -1,10 +1,18 @@
-<div id="idea">
-    <%= render partial: 'shared/feed_item', object: @idea %>
+<div class="similiar-page">
+<div id="idea" class="original-idea">
+    <%= render partial: @idea, locals: {options: {show_edit:true}} %>
 </div>
 
-<h2>Similiar posts:</h2>
+<div class="similiar-ideas-part">
+ <div class="similiar-ideas">
+  <div class="similiar-heading">
+    <h3 class="similiar-title">Similiar ideas</h3>
+  </div>
+  <div class="similiar-body" id="ideas">
+      <%= render partial: @similiar_ideas, locals: {original_idea:@idea,options:{show_requests:true,show_join:true,show_edit:false}}%>
+      <%= paginate @similiar_ideas %>
+  </div>
+ </div>
+</div>
 
-<div id="ideas" class="similiar">
-<%= render partial: 'shared/feed_item', collection: @ideas %>
-<%= paginate @ideas %>
 </div>

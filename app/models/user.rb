@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   has_many :reverse_relationships, foreign_key: "followed_id",
                                    class_name:  "Relationship",
                                    dependent:   :destroy
+  has_many :votes
   has_many :followers, through: :reverse_relationships, source: :follower
   before_save { self.email = email.downcase }
   before_create :create_remember_token
@@ -13,7 +14,7 @@ class User < ActiveRecord::Base
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
   has_secure_password
-  validates :password, length: { minimum: 6 }
+  validates :password, length: { minimum: 6 }, if: :setting_password?
 
   def User.new_remember_token
     SecureRandom.urlsafe_base64
@@ -31,6 +32,14 @@ class User < ActiveRecord::Base
     relationships.find_by(followed_id: other_user.id)
   end
 
+  def followed_user_ids
+    Relationship.where(follower_id: self.id).pluck(:followed_id)
+  end
+
+  def followed_user_ids_or_self
+    self.followed_user_ids + [self.id]
+  end
+
   def follow!(other_user)
     relationships.create!(followed_id: other_user.id)
   end
@@ -39,9 +48,17 @@ class User < ActiveRecord::Base
     relationships.find_by(followed_id: other_user.id).destroy
   end
 
+  def is_admin?
+    admin
+  end
+
   private
 
     def create_remember_token
       self.remember_token = User.hash(User.new_remember_token)
+    end
+
+    def setting_password?
+      self.password || self.password_confirmation
     end
 end

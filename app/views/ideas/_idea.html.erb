@@ -1,19 +1,58 @@
-<li>
-  <span class="title"><%= idea.title%></span>
-  <span class="content"><%= idea.content %></span>
-  <% for asset in idea.assets %>
-    <% if !(asset.file.content_type =~ /^image/).nil? %>
-        <p><%= image_tag asset.file.url(:medium) %></p>
-    <%end%>
-  <% end %>
-  <span class="tags">Tags: <%= raw idea.tag_list.map { |t| link_to t, tag_path(t) }.join(', ') %></span>
-  <span class="timestamp">
-    Posted <%= time_ago_in_words(idea.created_at) %> ago.
-  </span>
-  <% if current_user?(idea.user) %>
-    <%= link_to "delete", idea, method: :delete,
-                                     data: { confirm: 'You sure?' },
-                                     title: idea.content %>
-  <% end %>
-  <%= link_to 'similiar', similiar_idea_path(idea) %>
-</li>
+<% options ||= {} ; options = {show_edit:true,show_join:false,show_requests:true,show_group:true}.merge(options) %>
+<div class="idea">
+  <div class="idea-heading">
+    <% if options[:show_join] %>
+      <div class="idea-heading-buttons">
+        <%= link_to "Join", join_requests_path(idea: original_idea, idea_to_join: idea), method: :post, class: "join-button" %>
+      </div>
+    <% end %>
+    <h3 class="idea-title"><%= idea.title%></h3>
+    <div class="clearfix"> </div>
+  </div>
+  <div class="idea-body">
+    <span class="content"><%= h(idea.content).gsub("\r\n","<br/>").html_safe %></span>
+    <span class="images">
+      <% for asset in idea.assets %>
+        <% if !(asset.file.content_type =~ /^image/).nil? %>
+          <p><%= image_tag asset.file.url(:medium) %></p>
+        <% end %>
+      <% end %>
+    </span>
+    <div class="idea-footer">
+      <div class="tags-and-author">
+        <span class="tags">Tags: <%= raw idea.tag_list.map { |t| link_to t, tag_path(t), class:"tag" }.join(', ') %></span>
+        <span class="idea-timestamp-author">
+          <span class="timestamp">Posted <%= time_ago_in_words(idea.created_at) %> ago.</span>
+            <span class="author">
+              <%= link_to gravatar_for(idea.user), idea.user %>
+              <span class="user">
+                <%= link_to idea.user.name, idea.user %>
+              </span>
+            </span>
+          </span>
+        </span>
+      </div>
+      <% if options[:show_group] and idea.represented_by.present? %>
+        <div class="group-info">
+          This idea is merged into <%= link_to idea.represented_by.title, idea.represented_by %>. Peers:
+          <ul>
+          <% idea.represented_by.representing.where.not(id:idea.id).each do |idea_in_group|%>
+            <li class="group-member"><%= link_to idea_in_group.title, idea_in_group %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <% if options[:show_edit] && idea.editable_by?(current_user) %>
+        <%= link_to "edit", url_for([:edit,idea]), class: "btn edit-button" %>
+        <%= link_to "delete", idea, method: :delete,
+                                         data: { confirm: 'Are you sure?' },
+                                         title: idea.title,
+                                         class: "btn delete-button" %>
+        <%= link_to 'similiar', similiar_idea_path(idea), class: "btn simliar-button" %>
+      <% end %>
+      <% if options[:show_requests] && current_user && idea.user_id == current_user.id %>
+        <%= render partial: 'ideas/join_requests', locals: {idea: idea} %>
+      <% end %>
+    </div>
+  </div>
+</div>

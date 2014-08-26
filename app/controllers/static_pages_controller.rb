@@ -2,9 +2,11 @@ class StaticPagesController < ApplicationController
 
   def home
     if signed_in?
-      @idea  = current_user.ideas.build
-      @feed_items = current_user.feed.page(params[:page])
+      @feed_items = current_user.feed
+    else
+      @feed_items = Idea.where(represented_by:nil)
     end
+    @feed_items = @feed_items.page(params[:page]).per(8)
   end
   
   def help

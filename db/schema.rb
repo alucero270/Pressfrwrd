@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140420210011) do
+ActiveRecord::Schema.define(version: 20140810035824) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "assets", force: true do |t|
     t.integer  "idea_id"
@@ -22,14 +25,30 @@ ActiveRecord::Schema.define(version: 20140420210011) do
   end
 
   create_table "ideas", force: true do |t|
-    t.text     "content",    limit: 255
+    t.text     "content"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "title"
+    t.integer  "represented_by_id"
+    t.integer  "merged_to_id"
+    t.datetime "merged_on"
+    t.integer  "merged_into_id"
   end
 
-  add_index "ideas", ["user_id", "created_at"], name: "index_ideas_on_user_id_and_created_at"
+  add_index "ideas", ["merged_to_id"], name: "index_ideas_on_merged_to_id", using: :btree
+  add_index "ideas", ["represented_by_id"], name: "index_ideas_on_represented_by_id", using: :btree
+  add_index "ideas", ["user_id", "created_at"], name: "index_ideas_on_user_id_and_created_at", using: :btree
+
+  create_table "join_requests", force: true do |t|
+    t.integer "idea_id"
+    t.integer "status",         default: 0
+    t.integer "to_idea_id"
+    t.integer "merged_into_id"
+  end
+
+  add_index "join_requests", ["idea_id"], name: "index_join_requests_on_idea_id", using: :btree
+  add_index "join_requests", ["to_idea_id"], name: "index_join_requests_on_to_idea_id", using: :btree
 
   create_table "relationships", force: true do |t|
     t.integer  "follower_id"
@@ -38,9 +57,9 @@ ActiveRecord::Schema.define(version: 20140420210011) do
     t.datetime "updated_at"
   end
 
-  add_index "relationships", ["followed_id"], name: "index_relationships_on_followed_id"
-  add_index "relationships", ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true
-  add_index "relationships", ["follower_id"], name: "index_relationships_on_follower_id"
+  add_index "relationships", ["followed_id"], name: "index_relationships_on_followed_id", using: :btree
+  add_index "relationships", ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true, using: :btree
+  add_index "relationships", ["follower_id"], name: "index_relationships_on_follower_id", using: :btree
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"
@@ -52,14 +71,14 @@ ActiveRecord::Schema.define(version: 20140420210011) do
     t.datetime "created_at"
   end
 
-  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
+  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
 
   create_table "tags", force: true do |t|
     t.string  "name"
     t.integer "taggings_count", default: 0
   end
 
-  add_index "tags", ["name"], name: "index_tags_on_name", unique: true
+  add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "name"
@@ -71,7 +90,16 @@ ActiveRecord::Schema.define(version: 20140420210011) do
     t.boolean  "admin",           default: false
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["remember_token"], name: "index_users_on_remember_token"
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["remember_token"], name: "index_users_on_remember_token", using: :btree
+
+  create_table "votes", force: true do |t|
+    t.integer "join_request_id"
+    t.integer "user_id"
+    t.integer "status",          default: 0
+  end
+
+  add_index "votes", ["join_request_id"], name: "index_votes_on_join_request_id", using: :btree
+  add_index "votes", ["user_id"], name: "index_votes_on_user_id", using: :btree
 
 end
