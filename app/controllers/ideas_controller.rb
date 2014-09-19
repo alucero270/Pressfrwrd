@@ -12,7 +12,7 @@ class IdeasController < ApplicationController
     elsif params[:tag]
       ideas = Idea.tagged_with(params[:tag])
     else
-      ideas = Idea
+      ideas = Idea.order_by_likes.order_by_create
     end
     @ideas = ideas.page(params[:page]).per(8)
   end

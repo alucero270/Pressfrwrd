@@ -16,11 +16,14 @@ class Idea < ActiveRecord::Base
   belongs_to :merged_into, class_name: 'Idea'
 
   default_scope { order(created_at: :desc) }
+  
   validates :content, presence: true, length: { maximum: 1400 }
   validates :user_id, presence: true
 
   before_save :add_hashtags_to_tags
   after_update :save_assets
+
+  has_many :likes
 
   def self.create_with_merge!(merge_to,merged)
     ret = self.create!(title:merge_to.title,content:(merge_to.content||"")+"\r\n>>>MERGE:\r\n"+(merged.title||"")+"\r\n"+(merged.content||""),user:merge_to.user)
@@ -31,6 +34,14 @@ class Idea < ActiveRecord::Base
       ret.assets.create! file:asset.file
     end
     ret
+  end
+
+  def self.order_by_likes
+    reorder(likes_sum_cache: :desc)
+  end
+
+  def self.order_by_create
+    order(created_at: :desc)
   end
 
   def self.active
@@ -110,6 +121,10 @@ class Idea < ActiveRecord::Base
     else
       all
     end
+  end
+
+  def update_likes_sum_cache
+    self.update(likes_sum_cache: self.likes.sum(:value).to_i)
   end
 
   private

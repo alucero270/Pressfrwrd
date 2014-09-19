@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @ideas = @user.ideas.page(params[:page])
+    @ideas = @user.ideas.order_by_likes.order_by_create.page(params[:page])
   end
 
   def new

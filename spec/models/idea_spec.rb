@@ -83,4 +83,23 @@ describe Idea do
       it { expect(@idea.tags.pluck(:name)).to eq(["foo","bar","baz"])}
     end
   end
+
+  describe "order_by_vote" do
+    let(:o) { [0,2,3,1,4] }
+    let(:ideas) { create_list(:idea, 5) }
+    subject do
+      create_list(:like, 2, idea:ideas[o[0]], value: +1)
+      create_list(:like, 2, idea:ideas[o[1]], value: +1)
+      create(:like, idea:ideas[o[1]], value: -1)
+      create_list(:like, 2, idea:ideas[o[3]], value: +1)
+      create_list(:like, 3, idea:ideas[o[3]], value: -1)
+      create_list(:like, 2, idea:ideas[o[4]], value: -1)
+      Idea.where(id:ideas.map(&:id))
+    end
+
+    it "should order by likes" do
+      expect(subject.order_by_likes.map{|i|i.likes.sum(:value)}).to eq([2,1,0,-1,-2])
+      expect(subject.order_by_likes.to_a).to eq((0...5).map{|i|ideas[o[i]]})
+    end
+  end
 end

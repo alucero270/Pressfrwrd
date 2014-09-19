@@ -14,6 +14,7 @@ Pressfrwrd::Application.routes.draw do
     member do
       get 'similiar'
     end
+    resources :likes, only: [:create]
   end
   
   resources :join_requests, only: [:create, :update, :show] do

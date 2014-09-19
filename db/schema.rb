@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140810035824) do
+ActiveRecord::Schema.define(version: 20140919073924) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20140810035824) do
     t.integer  "merged_to_id"
     t.datetime "merged_on"
     t.integer  "merged_into_id"
+    t.integer  "likes_sum_cache",   default: 0
   end
 
   add_index "ideas", ["merged_to_id"], name: "index_ideas_on_merged_to_id", using: :btree
@@ -49,6 +50,15 @@ ActiveRecord::Schema.define(version: 20140810035824) do
 
   add_index "join_requests", ["idea_id"], name: "index_join_requests_on_idea_id", using: :btree
   add_index "join_requests", ["to_idea_id"], name: "index_join_requests_on_to_idea_id", using: :btree
+
+  create_table "likes", force: true do |t|
+    t.integer "user_id"
+    t.integer "idea_id"
+    t.integer "value"
+  end
+
+  add_index "likes", ["idea_id"], name: "index_likes_on_idea_id", using: :btree
+  add_index "likes", ["user_id"], name: "index_likes_on_user_id", using: :btree
 
   create_table "relationships", force: true do |t|
     t.integer  "follower_id"
