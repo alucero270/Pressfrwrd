@@ -31,7 +31,7 @@ group :test do
   gem 'spring-commands-rspec'
   gem 'guard-rspec', '2.5.0'
 end
-
+gem 'newrelic_rpm'
 gem 'sass-rails', '~> 4.0.3'
 gem 'uglifier', '2.1.1'
 
