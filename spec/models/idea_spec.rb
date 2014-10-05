@@ -84,7 +84,32 @@ describe Idea do
     end
   end
 
-  describe "order_by_vote" do
+  describe "order_by_likes_and_followed" do
+    let(:o) { [0,2,3,1,4] }
+    let(:order_without_follow) { [3,0,2,1,4] }
+    let(:ideas) { create_list(:idea,5) }
+    let(:user) { create(:user) }
+    subject do
+      # one like from followed is better than 2 like from other
+      create_list(:like, 3, idea:ideas[o[0]], value: +1)
+      ideas[o[0]].update(user: create(:user))
+      user.follow!(ideas[o[0]].user)
+      create_list(:like, 2, idea:ideas[o[1]], value: +1)
+      ideas[o[1]].update(user: create(:user))
+      user.follow!(ideas[o[1]].user)
+      create_list(:like, 5, idea:ideas[o[2]], value: +1)
+      create_list(:like, 2, idea:ideas[o[3]], value: +1)
+      create_list(:like, 1, idea:ideas[o[4]], value: +1)
+      Idea.where(id:ideas.map(&:id))
+    end
+    it "should order by likes but prefer friends" do
+      expect(subject.order_by_likes.map{|i|i.likes.sum(:value)}).to eq([5, 3, 2, 2, 1])
+      expect(subject.order_by_likes.to_a).to eq((0...5).map{|i|ideas[order_without_follow[i]]})
+      expect(subject.order_by_likes_and_followed(user).to_a).to eq((0...5).map{|i|ideas[o[i]]})
+    end
+  end
+
+  describe "order_by_like" do
     let(:o) { [0,2,3,1,4] }
     let(:ideas) { create_list(:idea, 5) }
     subject do

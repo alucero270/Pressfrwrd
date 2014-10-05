@@ -40,6 +40,18 @@ class Idea < ActiveRecord::Base
     reorder(likes_sum_cache: :desc)
   end
 
+  def self.order_by_likes_and_followed(user)
+    order_by_expr = 'ideas.likes_sum_cache'
+    followed = user.followed_users.pluck(:id)
+    unless followed.empty?
+      followed_mult = 2
+      followed_add = 10
+      order_by_expr << " + case when ideas.user_id in (#{followed.join(',')}) then ideas.likes_sum_cache*#{followed_mult}+#{followed_add} else 0 end"
+    end
+    order_by_expr << ' DESC'
+    reorder(order_by_expr)
+  end
+
   def self.order_by_create
     order(created_at: :desc)
   end
