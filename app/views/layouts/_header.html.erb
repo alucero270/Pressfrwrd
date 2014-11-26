@@ -13,6 +13,9 @@
         <div class="collapse navbar-collapse" id="collapsed-items">
           <div class="nav navbar-right navbar-nav">
             <ul class="nav navbar-nav">
+                <% if signed_in? %>
+                  <li><%= link_to "My ideas", ideas_path(mine:true) %></li>
+                <% end %>
                 <li><%= link_to "Home", root_path %></li>
                 <li><%= link_to "Help", help_path %></li>
                 <% if signed_in? %>

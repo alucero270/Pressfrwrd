@@ -15,6 +15,11 @@ FactoryGirl.define do
     user
   end
 
+  factory :like do
+    association :idea
+    association :user
+  end
+
   factory :group do
   end
 

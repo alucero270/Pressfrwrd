@@ -16,11 +16,14 @@ class Idea < ActiveRecord::Base
   belongs_to :merged_into, class_name: 'Idea'
 
   default_scope { order(created_at: :desc) }
+  
   validates :content, presence: true, length: { maximum: 1400 }
   validates :user_id, presence: true
 
   before_save :add_hashtags_to_tags
   after_update :save_assets
+
+  has_many :likes
 
   def self.create_with_merge!(merge_to,merged)
     ret = self.create!(title:merge_to.title,content:(merge_to.content||"")+"\r\n>>>MERGE:\r\n"+(merged.title||"")+"\r\n"+(merged.content||""),user:merge_to.user)
@@ -31,6 +34,30 @@ class Idea < ActiveRecord::Base
       ret.assets.create! file:asset.file
     end
     ret
+  end
+
+  def self.order_by_likes
+    reorder(likes_sum_cache: :desc)
+  end
+
+  def self.editable_by(user)
+    joins('LEFT OUTER JOIN ideas AS represented_ideas ON ideas.id = represented_ideas.represented_by_id').where('represented_ideas.user_id = ? OR ideas.user_id = ?',user.id,user.id)
+  end
+
+  def self.order_by_likes_and_followed(user)
+    order_by_expr = 'ideas.likes_sum_cache'
+    followed = user.followed_users.pluck(:id)
+    unless followed.empty?
+      followed_mult = 2
+      followed_add = 10
+      order_by_expr << " + case when ideas.user_id in (#{followed.join(',')}) then ideas.likes_sum_cache*#{followed_mult}+#{followed_add} else 0 end"
+    end
+    order_by_expr << ' DESC'
+    reorder(order_by_expr)
+  end
+
+  def self.order_by_create
+    order(created_at: :desc)
   end
 
   def self.active
@@ -110,6 +137,10 @@ class Idea < ActiveRecord::Base
     else
       all
     end
+  end
+
+  def update_likes_sum_cache
+    self.update(likes_sum_cache: self.likes.sum(:value).to_i)
   end
 
   private

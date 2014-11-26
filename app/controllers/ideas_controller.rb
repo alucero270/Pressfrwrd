@@ -11,8 +11,10 @@ class IdeasController < ApplicationController
       ideas = Idea.text_search(params[:query])
     elsif params[:tag]
       ideas = Idea.tagged_with(params[:tag])
+    elsif params[:mine]
+      ideas = Idea.editable_by(current_user).order_by_create
     else
-      ideas = Idea
+      ideas = Idea.order_by_likes.order_by_create
     end
     @ideas = ideas.page(params[:page]).per(8)
   end

@@ -11,7 +11,12 @@ describe IdeasController do
     subject { get :index }
     it { is_expected.to render_template("index") }
   end
-  
+
+  describe "GET#index mine" do
+    subject { get :index, mine: true }
+    it { is_expected.to render_template("index") }
+  end
+
   describe "GET#edit" do
     let(:idea) { create(:idea, user_id: user.id) }
     subject { get :edit, id: idea.id }

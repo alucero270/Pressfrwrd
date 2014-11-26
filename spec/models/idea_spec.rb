@@ -1,8 +1,10 @@
 require 'spec_helper'
+puts "#{$:}"
+puts "PATH=#{ENV['PATH']}"
 
 describe Idea do
 
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { create(:user) }
   before { @idea = user.ideas.build(content: "Lorem ipsum") }
 
   subject { @idea }
@@ -81,6 +83,70 @@ describe Idea do
         @idea.save
       end
       it { expect(@idea.tags.pluck(:name)).to eq(["foo","bar","baz"])}
+    end
+  end
+
+  describe "editable_by" do
+    let(:users_idea) { create(:idea, user_id: user.id) }
+    let(:other_user) { create(:user) }
+    let(:other_users_idea) { create(:idea, user_id: other_user.id) }
+    let(:representing_idea) {
+      result = create(:idea,content:"merged idea")
+      create(:idea,represented_by:result,user_id:user.id,content:"original idea")
+      result
+    }
+    let(:subject) {
+      Idea.where(id:[users_idea.id,other_users_idea.id,representing_idea.id]+
+        representing_idea.representing.pluck(:id))
+    }
+    it "should show editable if ether directly editable" do
+      expect(subject.editable_by(user)).to include(users_idea)
+      expect(subject.editable_by(user)).not_to include(other_users_idea)
+      expect(subject.editable_by(user)).to include(representing_idea)
+    end
+  end
+
+  describe "order_by_likes_and_followed" do
+    let(:o) { [0,2,3,1,4] }
+    let(:order_without_follow) { [3,0,2,1,4] }
+    let(:ideas) { create_list(:idea,5) }
+    let(:user) { create(:user) }
+    subject do
+      # one like from followed is better than 2 like from other
+      create_list(:like, 3, idea:ideas[o[0]], value: +1)
+      ideas[o[0]].update(user: create(:user))
+      user.follow!(ideas[o[0]].user)
+      create_list(:like, 2, idea:ideas[o[1]], value: +1)
+      ideas[o[1]].update(user: create(:user))
+      user.follow!(ideas[o[1]].user)
+      create_list(:like, 5, idea:ideas[o[2]], value: +1)
+      create_list(:like, 2, idea:ideas[o[3]], value: +1)
+      create_list(:like, 1, idea:ideas[o[4]], value: +1)
+      Idea.where(id:ideas.map(&:id))
+    end
+    it "should order by likes but prefer friends" do
+      expect(subject.order_by_likes.map{|i|i.likes.sum(:value)}).to eq([5, 3, 2, 2, 1])
+      expect(subject.order_by_likes.to_a).to eq((0...5).map{|i|ideas[order_without_follow[i]]})
+      expect(subject.order_by_likes_and_followed(user).to_a).to eq((0...5).map{|i|ideas[o[i]]})
+    end
+  end
+
+  describe "order_by_like" do
+    let(:o) { [0,2,3,1,4] }
+    let(:ideas) { create_list(:idea, 5) }
+    subject do
+      create_list(:like, 2, idea:ideas[o[0]], value: +1)
+      create_list(:like, 2, idea:ideas[o[1]], value: +1)
+      create(:like, idea:ideas[o[1]], value: -1)
+      create_list(:like, 2, idea:ideas[o[3]], value: +1)
+      create_list(:like, 3, idea:ideas[o[3]], value: -1)
+      create_list(:like, 2, idea:ideas[o[4]], value: -1)
+      Idea.where(id:ideas.map(&:id))
+    end
+
+    it "should order by likes" do
+      expect(subject.order_by_likes.map{|i|i.likes.sum(:value)}).to eq([2,1,0,-1,-2])
+      expect(subject.order_by_likes.to_a).to eq((0...5).map{|i|ideas[o[i]]})
     end
   end
 end
