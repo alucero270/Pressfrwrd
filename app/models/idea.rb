@@ -40,6 +40,10 @@ class Idea < ActiveRecord::Base
     reorder(likes_sum_cache: :desc)
   end
 
+  def self.editable_by(user)
+    joins('LEFT OUTER JOIN ideas AS represented_ideas ON ideas.id = represented_ideas.represented_by_id').where('represented_ideas.user_id = ? OR ideas.user_id = ?',user.id,user.id)
+  end
+
   def self.order_by_likes_and_followed(user)
     order_by_expr = 'ideas.likes_sum_cache'
     followed = user.followed_users.pluck(:id)
