@@ -1,8 +1,10 @@
 require 'spec_helper'
+puts "#{$:}"
+puts "PATH=#{ENV['PATH']}"
 
 describe Idea do
 
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { create(:user) }
   before { @idea = user.ideas.build(content: "Lorem ipsum") }
 
   subject { @idea }
@@ -81,6 +83,26 @@ describe Idea do
         @idea.save
       end
       it { expect(@idea.tags.pluck(:name)).to eq(["foo","bar","baz"])}
+    end
+  end
+
+  describe "editable_by" do
+    let(:users_idea) { create(:idea, user_id: user.id) }
+    let(:other_user) { create(:user) }
+    let(:other_users_idea) { create(:idea, user_id: other_user.id) }
+    let(:representing_idea) {
+      result = create(:idea,content:"merged idea")
+      create(:idea,represented_by:result,user_id:user.id,content:"original idea")
+      result
+    }
+    let(:subject) {
+      Idea.where(id:[users_idea.id,other_users_idea.id,representing_idea.id]+
+        representing_idea.representing.pluck(:id))
+    }
+    it "should show editable if ether directly editable" do
+      expect(subject.editable_by(user)).to include(users_idea)
+      expect(subject.editable_by(user)).not_to include(other_users_idea)
+      expect(subject.editable_by(user)).to include(representing_idea)
     end
   end
 
