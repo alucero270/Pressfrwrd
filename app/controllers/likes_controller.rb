@@ -11,6 +11,6 @@ class LikesController < ApplicationController
   private
 
   def load_idea
-    @idea = current_user.ideas.find(params.require(:idea_id))
+    @idea = Idea.find(params.require(:idea_id))
   end
 end
