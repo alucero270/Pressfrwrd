@@ -11,7 +11,7 @@ form.post-idea {
     @extend .form-horizontal;
     .post-button {
         @extend .btn;
-        @extend .btn-large;
+        @extend .btn-lg;
         @extend .btn-primary;
 
         @extend .col-md-2;
@@ -82,13 +82,13 @@ div.idea {
   }
   a.like-button {
     @extend .btn-default;
-    @extend .btn-large;
+    @extend .btn-lg;
     @extend .glyphicon;
     @extend .glyphicon-thumbs-up;
   }
   a.unlike-button {
     @extend .btn-default;
-    @extend .btn-large;
+    @extend .btn-lg;
     @extend .glyphicon;
     @extend .glyphicon-thumbs-down;
   }
@@ -97,21 +97,21 @@ div.idea {
     @extend .glyphicon-trash;
     @extend .btn;
     @extend .btn-default;
-    @extend .btn-large;
+    @extend .btn-lg;
   }
   a.edit-button {
     @extend .glyphicon;
     @extend .glyphicon-edit;
     @extend .btn;
     @extend .btn-default;
-    @extend .btn-large;
+    @extend .btn-lg;
   }
   a.simliar-button {
     @extend .glyphicon;
     @extend .glyphicon-log-in;
     @extend .btn;
     @extend .btn-default;
-    @extend .btn-large;
+    @extend .btn-lg;
   }
   a.join-button {
     @extend .btn;

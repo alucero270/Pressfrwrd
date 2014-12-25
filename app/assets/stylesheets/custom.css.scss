@@ -2,7 +2,7 @@
 
 .search-button {
     @extend .btn;
-    @extend .btn-large;
+    @extend .btn-lg;
     @extend .btn-primary;
 }
 
@@ -220,8 +220,8 @@ input {
 }
 
 .field_with_errors {
-  @extend .control-group;
-  @extend .error;
+  @extend .form-group;
+  @extend .has-error;
 }
 
 /* Users index */
