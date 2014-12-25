@@ -11,7 +11,7 @@ div.home {
     a.new-idea.button {
         margin-top: 10px;
         @extend .btn;
-        @extend .btn-large;
+        @extend .btn-lg;
         @extend .btn-primary;
     }
 }

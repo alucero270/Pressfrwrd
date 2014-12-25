@@ -13,7 +13,7 @@ form.sign-in {
     div.signin.form-group {
         input.signin-button {
             @extend .btn;
-            @extend .btn-large;
+            @extend .btn-lg;
             @extend .btn-primary;
             @extend .col-md-2;
             @extend .col-md-offset-4;
