@@ -19,9 +19,12 @@ describe "User pages" do
       before(:all) { 30.times { FactoryGirl.create(:user) } }
       after(:all)  { User.delete_all }
 
-      it { should have_link('Next') }
-      its(:html) { should match('>2</a>') }
-      it { should have_selector('.pagination') }
+      it "should generate correct html" do
+        subject
+        is_expected.to have_link('Next')
+        expect(subject.html).to match('>2</a>')
+        expect(subject).to have_selector('.pagination')
+      end
 
       it "should list each user" do
         User.page(1).each do |user|
