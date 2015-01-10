@@ -86,6 +86,9 @@ div.idea {
     @extend .glyphicon;
     @extend .glyphicon-thumbs-up;
   }
+  a.like-button.selected, a.unlike-button.selected {
+    @extend .btn-primary;
+  }
   a.unlike-button {
     @extend .btn-default;
     @extend .btn-lg;
