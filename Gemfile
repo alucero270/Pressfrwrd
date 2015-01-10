@@ -21,6 +21,8 @@ gem 'twitter-text'
 gem 'paperclip'
 gem 'aws-sdk'
 
+gem 'unicorn'
+
 group :development do
   gem 'web-console', '~> 2.0'
 end
