@@ -24,7 +24,6 @@ describe "Idea pages" do
     end
 
     describe "with valid information" do
-
       before { fill_in 'idea_content', with: "Lorem ipsum" }
       it "should create a idea" do
         expect { click_button "Post" }.to change(Idea, :count).by(1)

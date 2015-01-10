@@ -50,10 +50,7 @@
                                          class: "btn delete-button" %>
         <%= link_to 'similiar', similiar_idea_path(idea), class: "btn simliar-button" %>
       <% end %>
-      <%= link_to "", idea_likes_path(idea,value:1), method: :post, class: "btn like-button" %>
-      <span class="like-count"><%= idea.likes.count_value(+1) %></span>
-      <%= link_to "", idea_likes_path(idea,value:-1), method: :post, class: "btn unlike-button" %>
-      <span class="like-count"><%= idea.likes.count_value(-1) %></span>
+      <%= render partial: 'ideas/like_buttons', locals: {idea:idea} %>
 
       <% if options[:show_requests] && current_user && idea.user_id == current_user.id %>
         <%= render partial: 'ideas/join_requests', locals: {idea: idea} %>

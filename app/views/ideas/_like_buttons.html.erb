@@ -1,0 +1,8 @@
+<% {like:+1,unlike:-1}.each do |name,direction| %>
+  <% if like = idea.likes.find_by(value:direction,user:current_user) %>
+    <%= link_to "", like_path(like), method: :delete, class: "btn #{name.to_s}-button selected" %>
+  <% else %>
+    <%= link_to "", idea_likes_path(idea,value:direction), method: :post, class: "btn #{name.to_s}-button" %>
+  <% end  %>
+  <span class="like-count"><%= idea.likes.count_value(direction) %></span>
+<% end %>

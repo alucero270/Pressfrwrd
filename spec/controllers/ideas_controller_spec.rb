@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe IdeasController do
+  render_views
 
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
@@ -10,6 +11,30 @@ describe IdeasController do
   describe "GET#index" do
     subject { get :index }
     it { is_expected.to render_template("index") }
+
+    context "with ideas" do
+      let!(:ideas) { (1..3).map do |i|
+        create(:idea,title:"idea_#{i}")
+      end }
+      it "renders ideas" do
+        is_expected.to render_template("index")
+        expect(response.body).to have_css('h3.idea-title',text:ideas.first.title)
+      end
+
+      context "when liked" do
+        let!(:like_p) { create(:like, idea:ideas.first, user: user, value: +1) }
+        let!(:like_m) { create(:like, idea:ideas.second, user: user, value: -1) }
+        it "renders like as selected" do
+          is_expected.to render_template("index")
+          expect(response.body).to have_css("a.like-button.selected[href='#{like_path(like_p)}']")
+          expect(response.body).to have_css("a.unlike-button.selected[href='#{like_path(like_m)}']")
+          expect(response.body).to have_css("a.like-button.selected",count:1)
+          expect(response.body).to have_css("a.unlike-button.selected",count:1)
+          expect(response.body).to have_css("a.like-button",count:3)
+          expect(response.body).to have_css("a.unlike-button",count:3)
+        end
+      end
+    end
   end
 
   describe "GET#index mine" do
