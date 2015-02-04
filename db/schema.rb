@@ -13,10 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20140919073924) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
-  create_table "assets", force: true do |t|
+  create_table "assets", force: :cascade do |t|
     t.integer  "idea_id"
     t.string   "file_file_name"
     t.string   "file_content_type"
@@ -24,7 +21,7 @@ ActiveRecord::Schema.define(version: 20140919073924) do
     t.datetime "file_updated_at"
   end
 
-  create_table "ideas", force: true do |t|
+  create_table "ideas", force: :cascade do |t|
     t.text     "content"
     t.integer  "user_id"
     t.datetime "created_at"
@@ -37,41 +34,41 @@ ActiveRecord::Schema.define(version: 20140919073924) do
     t.integer  "likes_sum_cache",   default: 0
   end
 
-  add_index "ideas", ["merged_to_id"], name: "index_ideas_on_merged_to_id", using: :btree
-  add_index "ideas", ["represented_by_id"], name: "index_ideas_on_represented_by_id", using: :btree
-  add_index "ideas", ["user_id", "created_at"], name: "index_ideas_on_user_id_and_created_at", using: :btree
+  add_index "ideas", ["merged_to_id"], name: "index_ideas_on_merged_to_id"
+  add_index "ideas", ["represented_by_id"], name: "index_ideas_on_represented_by_id"
+  add_index "ideas", ["user_id", "created_at"], name: "index_ideas_on_user_id_and_created_at"
 
-  create_table "join_requests", force: true do |t|
+  create_table "join_requests", force: :cascade do |t|
     t.integer "idea_id"
     t.integer "status",         default: 0
     t.integer "to_idea_id"
     t.integer "merged_into_id"
   end
 
-  add_index "join_requests", ["idea_id"], name: "index_join_requests_on_idea_id", using: :btree
-  add_index "join_requests", ["to_idea_id"], name: "index_join_requests_on_to_idea_id", using: :btree
+  add_index "join_requests", ["idea_id"], name: "index_join_requests_on_idea_id"
+  add_index "join_requests", ["to_idea_id"], name: "index_join_requests_on_to_idea_id"
 
-  create_table "likes", force: true do |t|
+  create_table "likes", force: :cascade do |t|
     t.integer "user_id"
     t.integer "idea_id"
     t.integer "value"
   end
 
-  add_index "likes", ["idea_id"], name: "index_likes_on_idea_id", using: :btree
-  add_index "likes", ["user_id"], name: "index_likes_on_user_id", using: :btree
+  add_index "likes", ["idea_id"], name: "index_likes_on_idea_id"
+  add_index "likes", ["user_id"], name: "index_likes_on_user_id"
 
-  create_table "relationships", force: true do |t|
+  create_table "relationships", force: :cascade do |t|
     t.integer  "follower_id"
     t.integer  "followed_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "relationships", ["followed_id"], name: "index_relationships_on_followed_id", using: :btree
-  add_index "relationships", ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true, using: :btree
-  add_index "relationships", ["follower_id"], name: "index_relationships_on_follower_id", using: :btree
+  add_index "relationships", ["followed_id"], name: "index_relationships_on_followed_id"
+  add_index "relationships", ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true
+  add_index "relationships", ["follower_id"], name: "index_relationships_on_follower_id"
 
-  create_table "taggings", force: true do |t|
+  create_table "taggings", force: :cascade do |t|
     t.integer  "tag_id"
     t.integer  "taggable_id"
     t.string   "taggable_type"
@@ -81,16 +78,16 @@ ActiveRecord::Schema.define(version: 20140919073924) do
     t.datetime "created_at"
   end
 
-  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
+  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
 
-  create_table "tags", force: true do |t|
+  create_table "tags", force: :cascade do |t|
     t.string  "name"
     t.integer "taggings_count", default: 0
   end
 
-  add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
+  add_index "tags", ["name"], name: "index_tags_on_name", unique: true
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "email"
     t.datetime "created_at"
@@ -100,16 +97,16 @@ ActiveRecord::Schema.define(version: 20140919073924) do
     t.boolean  "admin",           default: false
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
-  add_index "users", ["remember_token"], name: "index_users_on_remember_token", using: :btree
+  add_index "users", ["email"], name: "index_users_on_email", unique: true
+  add_index "users", ["remember_token"], name: "index_users_on_remember_token"
 
-  create_table "votes", force: true do |t|
+  create_table "votes", force: :cascade do |t|
     t.integer "join_request_id"
     t.integer "user_id"
     t.integer "status",          default: 0
   end
 
-  add_index "votes", ["join_request_id"], name: "index_votes_on_join_request_id", using: :btree
-  add_index "votes", ["user_id"], name: "index_votes_on_user_id", using: :btree
+  add_index "votes", ["join_request_id"], name: "index_votes_on_join_request_id"
+  add_index "votes", ["user_id"], name: "index_votes_on_user_id"
 
 end
